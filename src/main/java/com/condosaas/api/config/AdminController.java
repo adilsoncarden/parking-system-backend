@@ -29,4 +29,9 @@ public class AdminController {
         return Map.of("module", "Pisos", "action", "Gestión de niveles y pisos");
     }
 
+    @GetMapping("/apartamentos")
+    public Map<String, String> apartamentos() {
+        return Map.of("module", "Apartamentos", "action", "Control de unidades residenciales");
+    }
+
 }
