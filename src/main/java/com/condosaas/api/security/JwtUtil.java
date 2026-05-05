@@ -1,9 +1,10 @@
 package com.condosaas.api.security;
 
 import org.springframework.stereotype.Component;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
-
+import java.util.function.Function;
 
 @Component
 public class JwtUtil {
@@ -13,5 +14,20 @@ public class JwtUtil {
     private final long JWT_TOKEN_VALIDITY = 1000 * 60 * 60 * 10;
 
     private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+
+    public String getUsernameFromToken(String token) {
+        return getClaimFromToken(token, Claims::getSubject);
+    }
+
+    public Date getExpirationDateFromToken(String token) {
+        return getClaimFromToken(token, Claims::getExpiration);
+    }
+
+    public <T> T getClaimFromToken(
+            String token,
+            Function<Claims, T> claimsResolver) {
+        final Claims claims = getAllClaimsFromToken(token);
+        return claimsResolver.apply(claims);
+    }
 
 }
