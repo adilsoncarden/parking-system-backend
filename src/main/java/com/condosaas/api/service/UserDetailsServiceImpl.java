@@ -1,8 +1,9 @@
 package com.condosaas.api.service;
 
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserDetailsServiceImpl {
+public class UserDetailsServiceImpl implements UserDetailsService {
     
 }
