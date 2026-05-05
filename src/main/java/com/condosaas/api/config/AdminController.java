@@ -14,4 +14,9 @@ public class AdminController {
         return Map.of("module", "Dashboard", "status", "Access Granted");
     }
 
+    @GetMapping("/condominios")
+    public Map<String, String> condominios() {
+        return Map.of("module", "Condominios", "action", "Listing all records");
+    }
+
 }
