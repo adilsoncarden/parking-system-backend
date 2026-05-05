@@ -29,6 +29,10 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),
                         request.getPassword()));
+
+        String token = jwtUtil.generateToken(request.getUsername());
+        return new JwtResponse(token);
+
     }
 
 }
