@@ -34,4 +34,9 @@ public class AdminController {
         return Map.of("module", "Apartamentos", "action", "Control de unidades residenciales");
     }
 
+    @GetMapping("/carritos")
+    public Map<String, String> carritos() {
+        return Map.of("module", "Carritos", "action", "Monitor de carritos de compras/servicios");
+    }
+
 }
