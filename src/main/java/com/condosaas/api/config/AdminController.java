@@ -1,8 +1,6 @@
 package com.condosaas.api.config;
 
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
@@ -37,6 +35,11 @@ public class AdminController {
     @GetMapping("/carritos")
     public Map<String, String> carritos() {
         return Map.of("module", "Carritos", "action", "Monitor de carritos de compras/servicios");
+    }
+
+    @GetMapping("/config")
+    public Map<String, String> config() {
+        return Map.of("module", "Configuración", "action", "Ajustes globales del SaaS");
     }
 
 }
