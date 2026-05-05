@@ -3,10 +3,12 @@ package com.condosaas.api.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.condosaas.api.dto.JwtResponse;
+import com.condosaas.api.dto.LoginRequest;
 import com.condosaas.api.security.JwtUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/auth")
@@ -21,7 +23,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public JwtResponse login() {
+    public JwtResponse login(@RequestBody LoginRequest request) {
         return null;
     }
 
