@@ -1,7 +1,10 @@
-package com.condosaas.api.config;
+package com.condosaas.api.controller;
 
-import org.springframework.web.bind.annotation.*;
 import java.util.Map;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/admin")
@@ -41,5 +44,4 @@ public class AdminController {
     public Map<String, String> config() {
         return Map.of("module", "Configuración", "action", "Ajustes globales del SaaS");
     }
-
 }

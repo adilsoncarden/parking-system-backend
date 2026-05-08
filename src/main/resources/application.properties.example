@@ -1,12 +1,16 @@
 spring.application.name=api
 
-# Datasource Supabase PostgreSQL (Pooler)
-spring.datasource.url=jdbc:postgresql://db.rxanbmzsvmcbsphoozzm.supabase.co:5432/postgres
-spring.datasource.username=postgres
-spring.datasource.password=
+# Datasource Supabase PostgreSQL
+spring.datasource.url=jdbc:postgresql://aws-1-sa-east-1.pooler.supabase.com:5432/postgres
+spring.datasource.username=postgres.rxanbmzsvmcbsphoozzm
+spring.datasource.password=P/6GWexMgFMgC@8
 spring.datasource.driver-class-name=org.postgresql.Driver
 
 # JPA / Hibernate
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
-spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+# Desactivar el aviso de open-in-view
+spring.jpa.open-in-view=false
+
+# Swagger / OpenAPI (Opcional: para saber dónde entrar)
+# Puedes ver tu documentación en http://localhost:8080/swagger-ui.html
