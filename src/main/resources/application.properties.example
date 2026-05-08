@@ -3,7 +3,7 @@ spring.application.name=api
 # Datasource Supabase PostgreSQL
 spring.datasource.url=jdbc:postgresql://aws-1-sa-east-1.pooler.supabase.com:5432/postgres
 spring.datasource.username=postgres.rxanbmzsvmcbsphoozzm
-spring.datasource.password=P/6GWexMgFMgC@8
+spring.datasource.password=
 spring.datasource.driver-class-name=org.postgresql.Driver
 
 # JPA / Hibernate
