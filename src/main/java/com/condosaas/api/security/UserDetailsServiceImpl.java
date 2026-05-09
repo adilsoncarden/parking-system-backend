@@ -27,10 +27,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         String roleName = user.getRole() != null ? user.getRole().getName() : "USER";
 
+        // Si el rol ya viene con prefijo ROLE_, lo usamos tal cual.
+        // Si no, lo agregamos.
+        String authority = roleName.startsWith("ROLE_") ? roleName : "ROLE_" + roleName;
+
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + roleName))
+                Collections.singletonList(new SimpleGrantedAuthority(authority))
         );
     }
 }
