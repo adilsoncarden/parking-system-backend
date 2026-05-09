@@ -6,42 +6,43 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+// ═══════════════════════════════════════════════════════════
+// AdminController contiene SOLO los endpoints "placeholder"
+// que aún no tienen tabla real (torres, pisos, apartamentos,
+// carritos, config). El de condominios se movió a su propio
+// CondominioController con BD real.
+// ═══════════════════════════════════════════════════════════
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
 
     @GetMapping("/dashboard")
-    public Map<String, Object> dashboard() {
-        return Map.of("module", "Dashboard", "status", "Access Granted");
-    }
-
-    @GetMapping("/condominios")
-    public Map<String, String> condominios() {
-        return Map.of("module", "Condominios", "action", "Listing all records");
+    public Map<String, String> dashboard() {
+        return Map.of("status", "Access Granted", "module", "Dashboard");
     }
 
     @GetMapping("/torres")
     public Map<String, String> torres() {
-        return Map.of("module", "Torres", "action", "Gestión de torres del condominio");
+        return Map.of("action", "Gestión de torres del condominio", "module", "Torres");
     }
 
     @GetMapping("/pisos")
     public Map<String, String> pisos() {
-        return Map.of("module", "Pisos", "action", "Gestión de niveles y pisos");
+        return Map.of("action", "Gestión de niveles y pisos", "module", "Pisos");
     }
 
     @GetMapping("/apartamentos")
     public Map<String, String> apartamentos() {
-        return Map.of("module", "Apartamentos", "action", "Control de unidades residenciales");
+        return Map.of("action", "Control de unidades residenciales", "module", "Apartamentos");
     }
 
     @GetMapping("/carritos")
     public Map<String, String> carritos() {
-        return Map.of("module", "Carritos", "action", "Monitor de carritos de compras/servicios");
+        return Map.of("action", "Monitor de carritos de compras/servicios", "module", "Carritos");
     }
 
     @GetMapping("/config")
     public Map<String, String> config() {
-        return Map.of("module", "Configuración", "action", "Ajustes globales del SaaS");
+        return Map.of("action", "Ajustes globales del SaaS", "module", "Configuración");
     }
 }
