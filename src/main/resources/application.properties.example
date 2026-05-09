@@ -1,11 +1,12 @@
 spring.application.name=api
 
-# Datasource Supabase PostgreSQL
-spring.datasource.url=jdbc:postgresql://aws-1-sa-east-1.pooler.supabase.com:5432/postgres
-spring.datasource.username=postgres.rxanbmzsvmcbsphoozzm
+# Datasource Supabase PostgreSQL (Pooler)
+spring.datasource.url=jdbc:postgresql://db.rxanbmzsvmcbsphoozzm.supabase.co:5432/postgres
+spring.datasource.username=postgres
 spring.datasource.password=
 spring.datasource.driver-class-name=org.postgresql.Driver
 
 # JPA / Hibernate
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
