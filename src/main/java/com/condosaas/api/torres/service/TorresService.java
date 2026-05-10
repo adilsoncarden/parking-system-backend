@@ -1,4 +1,4 @@
-package com.condosaas.api.Torres.service;
+package com.condosaas.api.torres.service;
 
 public class TorresService {
 }

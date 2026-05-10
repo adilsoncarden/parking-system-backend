@@ -1,7 +1,8 @@
-package com.condosaas.api.condominio;
+package com.condosaas.api.condominio.Controller;
 
 import java.util.List;
 
+import com.condosaas.api.condominio.service.CondominioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.condosaas.api.condominio.dto.CondominioRequest;
-import com.condosaas.api.condominio.dto.CondominioResponse;
+import com.condosaas.api.condominio.Controller.dto.CondominioRequest;
+import com.condosaas.api.condominio.Controller.dto.CondominioResponse;
 
 @RestController
 @RequestMapping("/admin/condominios")

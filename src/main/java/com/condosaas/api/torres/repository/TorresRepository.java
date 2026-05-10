@@ -1,4 +1,7 @@
-package com.condosaas.api.Torres.repository;
+package com.condosaas.api.torres.repository;
 
-public interface TorresRepository {
+import com.condosaas.api.torres.entity.Torres;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface TorresRepository extends JpaRepository<Torres,Long> {
 }

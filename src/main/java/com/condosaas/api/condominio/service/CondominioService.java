@@ -1,12 +1,14 @@
-package com.condosaas.api.condominio;
+package com.condosaas.api.condominio.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.condosaas.api.condominio.Repository.CondominioRepository;
+import com.condosaas.api.condominio.entity.Condominio;
 import org.springframework.stereotype.Service;
 
-import com.condosaas.api.condominio.dto.CondominioRequest;
-import com.condosaas.api.condominio.dto.CondominioResponse;
+import com.condosaas.api.condominio.Controller.dto.CondominioRequest;
+import com.condosaas.api.condominio.Controller.dto.CondominioResponse;
 
 @Service
 public class CondominioService {
