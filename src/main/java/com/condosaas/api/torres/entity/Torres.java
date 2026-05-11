@@ -25,7 +25,7 @@ public class Torres {
     private Integer cantidadPisos;
 
     @Column(name = "Cantidad_apartamentos")
-    private Integer cantidadApartametos;
+    private Integer cantidadApartamentos;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_condominios", nullable = false)
