@@ -15,8 +15,8 @@ public class TorresService {
     private final TorresRepository torresRepository;
     private final  CondominioRepository condominioRepository;
 
- public List<Torres> ListarPorCondominio (Long idCondominio) {
-     return torresRepository.findbyCondominioId(idCondominio);
+ public List<Torres> ListarTodasLasTorresPorCondominio () {
+     return torresRepository.findAll();
 
  }
 

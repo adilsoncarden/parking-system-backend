@@ -18,17 +18,22 @@ public class TorresController {
     private TorresService torresService;
 
     @GetMapping
-    public ResponseEntity<List<Torres>> obtenerTorres(@PathVariable Long idCondominio) {
-        List<Torres> torres = torresService.ListarPorCondominio(idCondominio);
+    public ResponseEntity<List<Torres>> obtenerTodas() {
+        List<Torres> torres = torresService.ListarTodasLasTorresPorCondominio();
         return ResponseEntity.ok(torres);
     }
 
 
 
 
-
-
-
-
-
 }
+
+
+
+
+
+
+
+
+
+
