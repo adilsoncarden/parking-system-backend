@@ -1,4 +1,4 @@
-package com.condosaas.api.condominio.dto;
+package com.condosaas.api.condominio.Controller.dto;
 
 import lombok.Data;
 

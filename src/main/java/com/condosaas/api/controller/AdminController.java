@@ -21,10 +21,10 @@ public class AdminController {
         return Map.of("status", "Access Granted", "module", "Dashboard");
     }
 
-    @GetMapping("/torres")
-    public Map<String, String> torres() {
+    /*@GetMapping("/torres")
+    /public Map<String, String> torres() {
         return Map.of("action", "Gestión de torres del condominio", "module", "Torres");
-    }
+    }*/
 
     @GetMapping("/pisos")
     public Map<String, String> pisos() {

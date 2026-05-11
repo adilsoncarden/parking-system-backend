@@ -1,4 +1,4 @@
-package com.condosaas.api.condominio;
+package com.condosaas.api.condominio.entity;
 
 import java.time.LocalDateTime;
 
