@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface TorresRepository extends JpaRepository<Torres,Long> {
-    List<Torres>findbyCondominioIdCondominio(Long idCondominio);
+    List<Torres>findbyCondominioId(Long idCondominio);
 }
