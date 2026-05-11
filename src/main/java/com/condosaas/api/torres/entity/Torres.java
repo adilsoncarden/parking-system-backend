@@ -2,6 +2,7 @@ package com.condosaas.api.torres.entity;
 
 
 import com.condosaas.api.condominio.entity.Condominio;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,6 +29,7 @@ public class Torres {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_condominios", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "torres"})
     private Condominio condominio;
 
     @Column(name = "created_at", updatable = false)
