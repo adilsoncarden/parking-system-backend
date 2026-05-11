@@ -21,11 +21,6 @@ public class Torres {
     @Column(nullable = false, length = 100)
     private String Nombre;
 
-    @Column(name = "Cantidad_pisos")
-    private Integer cantidadPisos;
-
-    @Column(name = "Cantidad_apartamentos")
-    private Integer cantidadApartamentos;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_condominios", nullable = false)
