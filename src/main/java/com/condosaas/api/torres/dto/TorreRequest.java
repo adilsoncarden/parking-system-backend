@@ -7,6 +7,4 @@ import lombok.Data;
 public class TorreRequest {
     private String nombre;
     private Long idCondominio;
-    private Integer pisos;
-    private Integer aptos;
 }
