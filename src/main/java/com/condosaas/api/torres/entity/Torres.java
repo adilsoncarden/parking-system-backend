@@ -21,7 +21,6 @@ public class Torres {
     @Column(nullable = false, length = 100)
     private String Nombre;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_condominios", nullable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "torres"})
