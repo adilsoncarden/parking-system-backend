@@ -26,16 +26,21 @@ public class TorresService {
         // 1. Buscamos el condominio real
         Condominio con = condominioRepository.findById(request.getIdCondominio())
                 .orElseThrow(() -> new RuntimeException("Condominio no encontrado"));
-
         // 2. Mapeamos del DTO a la Entidad
         Torres torre = new Torres();
         torre.setNombre(request.getNombre());
-        torre.setCantidadPisos(request.getPisos());
-        torre.setCantidadApartamentos(request.getAptos()); // Ojo con el nombre en tu entidad
+        // Ojo con el nombre en tu entidad
         torre.setCondominio(con);
-
         return torresRepository.save(torre);
-
-
     }
+
+      public void eliminar (Torres torres){
+          torresRepository.delete(torres);
+     }
+
+
+
+
+
+
 }

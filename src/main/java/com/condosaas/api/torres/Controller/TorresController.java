@@ -25,6 +25,10 @@ public class TorresController {
         return ResponseEntity.ok(torresService.guardarTorre(request));
     }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> eliminar (@RequestBody Torres torres) {
+        torresService.eliminar(torres);
+    }
 
 
 }
