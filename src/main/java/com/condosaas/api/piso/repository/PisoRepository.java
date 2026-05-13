@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface PisoRepository extends JpaRepository<Piso, Long> {
 
-    List<Piso> findByTorreId(Long idTorre);
+    List<Piso> findByTorreIdTorres(Long idTorres);
 }

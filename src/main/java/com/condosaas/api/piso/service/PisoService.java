@@ -27,7 +27,7 @@ public class PisoService {
     }
 
     public List<PisoResponse> listarPorTorre(Long idTorre) {
-        return pisoRepository.findByTorreId(idTorre)
+        return pisoRepository.findByTorreIdTorres(idTorre)
                 .stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
@@ -68,7 +68,7 @@ public class PisoService {
         PisoResponse response = new PisoResponse();
         response.setId(piso.getId());
         response.setNumeroPiso(piso.getNumeroPiso());
-        response.setIdTorre(piso.getTorre().getId());
+        response.setIdTorre(piso.getTorre().getIdTorres());
         response.setNombreTorre(piso.getTorre().getNombre());
         return response;
     }

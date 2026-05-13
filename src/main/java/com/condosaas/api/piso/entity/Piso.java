@@ -17,6 +17,6 @@ public class Piso {
     private Integer numeroPiso;
 
     @ManyToOne
-    @JoinColumn(name = "id_torre", nullable = false)
+    @JoinColumn(name = "id_torres", nullable = false)
     private Torres torre;
 }
