@@ -20,25 +20,16 @@ public class TorresController {
         List<Torres> torres = torresService.ListarTodasLasTorresPorCondominio();
         return ResponseEntity.ok(torres);
     }
+
     @PostMapping
     public ResponseEntity<Torres> Guardar(@RequestBody TorreRequest request) {
         return ResponseEntity.ok(torresService.guardarTorre(request));
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<Void> eliminar (@RequestBody Torres torres) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(@RequestBody Torres torres) {
         torresService.eliminar(torres);
+        return ResponseEntity.noContent().build();
     }
 
-
 }
-
-
-
-
-
-
-
-
-
-
