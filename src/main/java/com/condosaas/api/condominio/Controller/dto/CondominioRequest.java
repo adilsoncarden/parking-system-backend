@@ -10,4 +10,5 @@ public class CondominioRequest {
     private String imagen;
     private Double latitud;
     private Double longitud;
+    private Integer numEntradas;
 }
