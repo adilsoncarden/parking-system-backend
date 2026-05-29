@@ -1,45 +1,42 @@
 package com.condosaas.api.module.rol.controller;
 
-import com.condosaas.api.module.rol.dto.RolRequest;
-import com.condosaas.api.module.rol.dto.RolResponse;
+import com.condosaas.api.module.rol.dto.*;
 import com.condosaas.api.module.rol.service.RolService;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/roles")
+@RequestMapping("/api/roles")
+@RequiredArgsConstructor
 public class RolController {
+
     private final RolService service;
 
-    public RolController(RolService service) {
-        this.service = service;
+    @PostMapping("/create")
+    public ResponseEntity<RolResponseDTO> create(@RequestBody RolRequestDTO dto) {
+        return ResponseEntity.ok(service.create(dto));
     }
 
-    @GetMapping
-    public ResponseEntity<List<RolResponse>> findAll() {
-        return ResponseEntity.ok(service.findAll());
+    @GetMapping("")
+    public ResponseEntity<List<RolResponseDTO>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RolResponse> findById(@PathVariable Integer id) {
-        return ResponseEntity.ok(service.findById(id));
+    public ResponseEntity<RolResponseDTO> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getById(id));
     }
 
-    @PostMapping
-    public ResponseEntity<RolResponse> create(@Valid @RequestBody RolRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request));
+    @PutMapping("/{id}/update")
+    public ResponseEntity<RolResponseDTO> update(@PathVariable Long id, @RequestBody RolRequestDTO dto) {
+        return ResponseEntity.ok(service.update(id, dto));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<RolResponse> update(@PathVariable Integer id, @Valid @RequestBody RolRequest request) {
-        return ResponseEntity.ok(service.update(id, request));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+    @DeleteMapping("/{id}/delete")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }

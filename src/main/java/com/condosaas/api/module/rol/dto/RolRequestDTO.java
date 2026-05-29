@@ -5,9 +5,10 @@ import lombok.*;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class RolRequest {
+public class RolRequestDTO {
+
     @NotBlank
-    private String name;
+    private String nombre;
+
+    private String descripcion;
 }

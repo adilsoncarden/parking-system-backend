@@ -1,17 +1,18 @@
 package com.condosaas.api.module.rol.service;
 
-import com.condosaas.api.module.rol.dto.RolRequest;
-import com.condosaas.api.module.rol.dto.RolResponse;
+import com.condosaas.api.module.rol.dto.*;
+
 import java.util.List;
 
 public interface RolService {
-    List<RolResponse> findAll();
 
-    RolResponse findById(Integer id);
+    RolResponseDTO create(RolRequestDTO dto);
 
-    RolResponse create(RolRequest request);
+    RolResponseDTO getById(Long id);
 
-    RolResponse update(Integer id, RolRequest request);
+    List<RolResponseDTO> getAll();
 
-    void delete(Integer id);
+    RolResponseDTO update(Long id, RolRequestDTO dto);
+
+    void delete(Long id);
 }

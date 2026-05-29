@@ -1,61 +1,73 @@
 package com.condosaas.api.module.rol.service.impl;
 
-import com.condosaas.api.exception.ResourceNotFoundException;
-import com.condosaas.api.module.rol.dto.RolRequest;
-import com.condosaas.api.module.rol.dto.RolResponse;
+import com.condosaas.api.module.rol.dto.*;
 import com.condosaas.api.module.rol.model.Rol;
 import com.condosaas.api.module.rol.repository.RolRepository;
 import com.condosaas.api.module.rol.service.RolService;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 @Transactional
 public class RolServiceImpl implements RolService {
+
     private final RolRepository repository;
 
-    public RolServiceImpl(RolRepository repository) {
-        this.repository = repository;
+    @Override
+    public RolResponseDTO create(RolRequestDTO dto) {
+        Rol rol = Rol.builder()
+                .nombre(dto.getNombre())
+                .descripcion(dto.getDescripcion())
+                .build();
+
+        return mapToDTO(repository.save(rol));
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<RolResponse> findAll() {
-        return repository.findAll().stream().map(this::toResponse).toList();
+    public RolResponseDTO getById(Long id) {
+        Rol rol = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Rol no encontrado"));
+
+        return mapToDTO(rol);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public RolResponse findById(Integer id) {
-        return toResponse(get(id));
+    public List<RolResponseDTO> getAll() {
+        return repository.findAll()
+                .stream()
+                .map(this::mapToDTO)
+                .toList();
     }
 
     @Override
-    public RolResponse create(RolRequest request) {
-        Rol entity = new Rol();
-        entity.setName(request.getName());
-        return toResponse(repository.save(entity));
+    public RolResponseDTO update(Long id, RolRequestDTO dto) {
+        Rol rol = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Rol no encontrado"));
+
+        rol.setNombre(dto.getNombre());
+        rol.setDescripcion(dto.getDescripcion());
+
+        return mapToDTO(repository.save(rol));
     }
 
     @Override
-    public RolResponse update(Integer id, RolRequest request) {
-        Rol entity = get(id);
-        entity.setName(request.getName());
-        return toResponse(repository.save(entity));
+    public void delete(Long id) {
+        if (!repository.existsById(id)) {
+            throw new EntityNotFoundException("Rol no encontrado");
+        }
+        repository.deleteById(id);
     }
 
-    @Override
-    public void delete(Integer id) {
-        repository.delete(get(id));
-    }
-
-    private Rol get(Integer id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Rol no encontrado: " + id));
-    }
-
-    private RolResponse toResponse(Rol entity) {
-        return new RolResponse(entity.getId(), entity.getName());
+    private RolResponseDTO mapToDTO(Rol rol) {
+        return RolResponseDTO.builder()
+                .id(rol.getId())
+                .nombre(rol.getNombre())
+                .descripcion(rol.getDescripcion())
+                .build();
     }
 }
