@@ -18,7 +18,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         // Permitir que cualquiera cree roles (solo para pruebas locales)
-                        .requestMatchers("/api/roles/**").permitAll()
+                        .requestMatchers("/api/**").permitAll()
                         // El resto de rutas seguirán requiriendo autenticación
                         .anyRequest().authenticated());
 
