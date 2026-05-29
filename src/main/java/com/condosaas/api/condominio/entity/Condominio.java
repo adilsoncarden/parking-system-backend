@@ -41,6 +41,9 @@ public class Condominio {
 
     private Double longitud;
 
+    @Column(name = "num_entradas", nullable = false, columnDefinition = "INTEGER DEFAULT 1")
+    private Integer numEntradas;
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 

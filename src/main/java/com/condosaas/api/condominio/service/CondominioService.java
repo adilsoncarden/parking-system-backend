@@ -39,6 +39,7 @@ public class CondominioService {
         condo.setImagen(request.getImagen());
         condo.setLatitud(request.getLatitud());
         condo.setLongitud(request.getLongitud());
+        condo.setNumEntradas(request.getNumEntradas() != null ? request.getNumEntradas() : 1);
 
         Condominio guardado = condominioRepository.save(condo);
         return toResponse(guardado);
@@ -54,6 +55,7 @@ public class CondominioService {
         existente.setImagen(request.getImagen());
         existente.setLatitud(request.getLatitud());
         existente.setLongitud(request.getLongitud());
+        existente.setNumEntradas(request.getNumEntradas() != null ? request.getNumEntradas() : 1);
 
         Condominio actualizado = condominioRepository.save(existente);
         return toResponse(actualizado);
@@ -75,6 +77,7 @@ public class CondominioService {
         r.setImagen(c.getImagen());
         r.setLatitud(c.getLatitud());
         r.setLongitud(c.getLongitud());
+        r.setNumEntradas(c.getNumEntradas());
         r.setCreatedAt(c.getCreatedAt());
         r.setUpdatedAt(c.getUpdatedAt());
         return r;

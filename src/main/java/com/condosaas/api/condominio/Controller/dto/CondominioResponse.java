@@ -15,4 +15,5 @@ public class CondominioResponse {
     private Double longitud;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Integer numEntradas;
 }
