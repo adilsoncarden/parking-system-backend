@@ -16,12 +16,14 @@ public class Plaza {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 20)
     private String codigo;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
     private EstadoOcupacion estado;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_zona")
+    @JoinColumn(name = "id_zona", nullable = false)
     private Zona zona;
 }

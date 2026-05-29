@@ -15,10 +15,10 @@ public class Piso {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "numero_piso")
+    @Column(name = "numero_piso", nullable = false)
     private Integer numeroPiso;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_torres")
+    @JoinColumn(name = "id_torres", nullable = false)
     private Torre torre;
 }

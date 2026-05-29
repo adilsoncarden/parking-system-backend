@@ -13,7 +13,6 @@ public class AccesoVehicularRequest {
     private String placa;
     @NotNull
     private Long idCondominio;
-    @NotNull
     private Long idPuntoAcceso;
     private String observaciones;
 }

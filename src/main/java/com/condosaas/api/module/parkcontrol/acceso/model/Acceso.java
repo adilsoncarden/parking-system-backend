@@ -18,7 +18,7 @@ public class Acceso {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "hora_entrada")
+    @Column(name = "hora_entrada", nullable = false)
     private LocalDateTime horaEntrada;
 
     @Column(name = "hora_salida")
@@ -33,6 +33,6 @@ public class Acceso {
     private Plaza plaza;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_vehiculo")
+    @JoinColumn(name = "id_vehiculo", nullable = false)
     private Vehiculo vehiculo;
 }

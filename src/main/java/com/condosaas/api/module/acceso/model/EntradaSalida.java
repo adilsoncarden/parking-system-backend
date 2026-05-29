@@ -15,9 +15,10 @@ public class EntradaSalida {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 100)
     private String nombre;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_condominio")
+    @JoinColumn(name = "id_condominio", nullable = false)
     private Condominio condominio;
 }

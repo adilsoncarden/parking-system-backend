@@ -17,21 +17,22 @@ public class PaseInvitado {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private Boolean activo;
 
-    @Column(unique = true)
+    @Column(nullable = false, unique = true, length = 50)
     private String codigo;
 
-    @Column(name = "fecha_fin")
+    @Column(name = "fecha_fin", nullable = false)
     private LocalDateTime fechaFin;
 
-    @Column(name = "fecha_inicio")
+    @Column(name = "fecha_inicio", nullable = false)
     private LocalDateTime fechaInicio;
 
-    @Column(name = "nombre_visitante")
+    @Column(name = "nombre_visitante", length = 100)
     private String nombreVisitante;
 
-    @Column(name = "placa_visitante")
+    @Column(name = "placa_visitante", length = 15)
     private String placaVisitante;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -39,6 +40,6 @@ public class PaseInvitado {
     private Apartamento apartamento;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_condominio")
+    @JoinColumn(name = "id_condominio", nullable = false)
     private Condominio condominio;
 }

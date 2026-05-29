@@ -273,7 +273,6 @@
 {
   "placa": "ABC123",
   "idCondominio": 1,
-  "idPuntoAcceso": 1,
   "observaciones": "Salida"
 }
 ```
@@ -289,6 +288,10 @@
 ## GET /admin/carritos?condominioId=1
 
 ## GET /admin/carritos/prestamos
+
+## GET /admin/carritos/prestamos?condominioId=1
+
+## GET /admin/carritos/prestamos?estado=ACTIVO
 
 ## GET /admin/carritos/{id}
 

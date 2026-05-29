@@ -1,6 +1,7 @@
 package com.condosaas.api.module.carrito.service;
 
 import com.condosaas.api.module.carrito.dto.*;
+import com.condosaas.api.module.enums.EstadoPrestamo;
 import java.util.List;
 
 public interface CarritoService {
@@ -14,7 +15,7 @@ public interface CarritoService {
 
     void delete(Long id);
 
-    List<PrestamoResponse> findAllPrestamos();
+    List<PrestamoResponse> findAllPrestamos(Long condominioId, EstadoPrestamo estado);
 
     PrestamoResponse prestar(PrestamoRequest request);
 

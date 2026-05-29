@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TorreResponse {
-    private Long idTorres;
+    private Long id;
     private String nombre;
     private Integer cantidadPisos;
     private Integer cantidadApartamentos;

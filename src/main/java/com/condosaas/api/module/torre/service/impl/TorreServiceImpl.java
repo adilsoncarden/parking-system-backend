@@ -74,7 +74,7 @@ public class TorreServiceImpl implements TorreService {
 
     private TorreResponse toResponse(Torre entity) {
         return new TorreResponse(
-                entity.getIdTorres(),
+                entity.getId(),
                 entity.getNombre(),
                 entity.getCantidadPisos(),
                 entity.getCantidadApartamentos(),

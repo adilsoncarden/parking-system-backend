@@ -18,7 +18,7 @@ public class CondominioController {
         this.service = service;
     }
 
-    @GetMapping
+    @GetMapping("")
     public ResponseEntity<List<CondominioResponse>> findAll() {
         return ResponseEntity.ok(service.findAll());
     }
@@ -34,7 +34,8 @@ public class CondominioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CondominioResponse> update(@PathVariable Long id, @Valid @RequestBody CondominioRequest request) {
+    public ResponseEntity<CondominioResponse> update(@PathVariable Long id,
+            @Valid @RequestBody CondominioRequest request) {
         return ResponseEntity.ok(service.update(id, request));
     }
 

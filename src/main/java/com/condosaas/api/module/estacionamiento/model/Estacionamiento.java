@@ -18,12 +18,15 @@ public class Estacionamiento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 20)
     private String codigo;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
     private EstadoOcupacion estado;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
     private TipoEstacionamiento tipo;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,6 +34,6 @@ public class Estacionamiento {
     private Apartamento apartamento;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_condominio")
+    @JoinColumn(name = "id_condominio", nullable = false)
     private Condominio condominio;
 }

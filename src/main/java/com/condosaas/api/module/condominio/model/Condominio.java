@@ -15,14 +15,22 @@ public class Condominio {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String direccion;
+
+    @Column(columnDefinition = "TEXT")
     private String imagen;
+
     private Double latitud;
     private Double longitud;
+
+    @Column(nullable = false, length = 150)
     private String nombre;
+
+    @Column(nullable = false, length = 20)
     private String tipo;
 
     @Column(name = "updated_at")

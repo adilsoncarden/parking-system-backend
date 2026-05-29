@@ -98,7 +98,9 @@ public class AccesoServiceImpl implements AccesoService {
         entity.setHora(LocalDateTime.now());
         entity.setTipoMovimiento(tipo);
         entity.setCondominio(getCondominio(request.getIdCondominio()));
-        entity.setPuntoAcceso(getEntradaSalida(request.getIdPuntoAcceso()));
+        if (request.getIdPuntoAcceso() != null) {
+            entity.setPuntoAcceso(getEntradaSalida(request.getIdPuntoAcceso()));
+        }
         return accesoVehicularRepository.save(entity);
     }
 

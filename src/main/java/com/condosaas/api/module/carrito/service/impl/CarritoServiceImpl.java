@@ -81,8 +81,16 @@ public class CarritoServiceImpl implements CarritoService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<PrestamoResponse> findAllPrestamos() {
-        return prestamoRepository.findAll().stream().map(this::toPrestamoResponse).toList();
+    public List<PrestamoResponse> findAllPrestamos(Long condominioId, EstadoPrestamo estado) {
+        List<Prestamo> list;
+        if (estado != null) {
+            list = prestamoRepository.findByEstado(estado);
+        } else if (condominioId != null) {
+            list = prestamoRepository.findByEntradaSalidaCondominioId(condominioId);
+        } else {
+            list = prestamoRepository.findAll();
+        }
+        return list.stream().map(this::toPrestamoResponse).toList();
     }
 
     @Override
@@ -113,12 +121,10 @@ public class CarritoServiceImpl implements CarritoService {
         LocalDateTime fin = LocalDateTime.now();
         prestamo.setHoraFin(fin);
         long minutos = Duration.between(prestamo.getHoraInicio(), fin).toMinutes();
+        prestamo.setEstado(EstadoPrestamo.DEVUELTO);
         if (minutos > LIMITE_MINUTOS) {
             prestamo.setMultado(true);
             prestamo.setMontoMulta(MULTA);
-            prestamo.setEstado(EstadoPrestamo.MULTADO);
-        } else {
-            prestamo.setEstado(EstadoPrestamo.DEVUELTO);
         }
         Carrito carrito = prestamo.getCarrito();
         if (carrito != null) {

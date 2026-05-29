@@ -26,7 +26,7 @@ public class PisoServiceImpl implements PisoService {
     @Override
     @Transactional(readOnly = true)
     public List<PisoResponse> findAll(Long torreId) {
-        var list = torreId == null ? repository.findAll() : repository.findByTorreIdTorres(torreId);
+        var list = torreId == null ? repository.findAll() : repository.findByTorreId(torreId);
         return list.stream().map(this::toResponse).toList();
     }
 
@@ -74,6 +74,6 @@ public class PisoServiceImpl implements PisoService {
         return new PisoResponse(
                 entity.getId(),
                 entity.getNumeroPiso(),
-                entity.getTorre() != null ? entity.getTorre().getIdTorres() : null);
+                entity.getTorre() != null ? entity.getTorre().getId() : null);
     }
 }

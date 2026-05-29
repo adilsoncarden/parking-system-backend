@@ -2,6 +2,7 @@ package com.condosaas.api.module.carrito.controller;
 
 import com.condosaas.api.module.carrito.dto.*;
 import com.condosaas.api.module.carrito.service.CarritoService;
+import com.condosaas.api.module.enums.EstadoPrestamo;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +19,10 @@ public class CarritoController {
     }
 
     @GetMapping("/prestamos")
-    public ResponseEntity<List<PrestamoResponse>> findAllPrestamos() {
-        return ResponseEntity.ok(service.findAllPrestamos());
+    public ResponseEntity<List<PrestamoResponse>> findAllPrestamos(
+            @RequestParam(required = false) Long condominioId,
+            @RequestParam(required = false) EstadoPrestamo estado) {
+        return ResponseEntity.ok(service.findAllPrestamos(condominioId, estado));
     }
 
     @PostMapping("/prestamos")

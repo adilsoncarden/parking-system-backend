@@ -16,13 +16,16 @@ public class Permanencia {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "calculado_at")
+    @Column(name = "calculado_at", nullable = false)
     private LocalDateTime calculadoAt;
 
+    @Column(nullable = false)
     private Long minutos;
+
+    @Column(nullable = false)
     private Double monto;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_acceso", unique = true)
+    @JoinColumn(name = "id_acceso", nullable = false, unique = true)
     private Acceso acceso;
 }

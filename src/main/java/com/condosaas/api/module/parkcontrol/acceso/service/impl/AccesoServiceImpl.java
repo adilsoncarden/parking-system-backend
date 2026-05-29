@@ -56,19 +56,24 @@ public class AccesoServiceImpl implements AccesoService {
 
     @Override
     public AccesoResponse registrarEntrada(AccesoRequest request) {
-        Plaza plaza = getPlaza(request.getIdPlaza());
-        if (plaza.getEstado() == EstadoOcupacion.OCUPADA) {
-            throw new IllegalStateException("Plaza ocupada");
-        }
+        Vehiculo vehiculo = getVehiculo(request.getIdVehiculo());
+        repository.findByVehiculoIdAndHoraSalidaIsNull(vehiculo.getId())
+                .ifPresent(a -> { throw new IllegalStateException("Vehiculo con acceso abierto"); });
         Acceso entity = new Acceso();
         entity.setHoraEntrada(LocalDateTime.now());
-        entity.setVehiculo(getVehiculo(request.getIdVehiculo()));
-        entity.setPlaza(plaza);
+        entity.setVehiculo(vehiculo);
+        if (request.getIdPlaza() != null) {
+            Plaza plaza = getPlaza(request.getIdPlaza());
+            if (plaza.getEstado() == EstadoOcupacion.OCUPADA) {
+                throw new IllegalStateException("Plaza ocupada");
+            }
+            entity.setPlaza(plaza);
+            plaza.setEstado(EstadoOcupacion.OCUPADA);
+            plazaRepository.save(plaza);
+        }
         if (request.getIdPaseInvitado() != null) {
             entity.setPaseInvitado(getPaseInvitado(request.getIdPaseInvitado()));
         }
-        plaza.setEstado(EstadoOcupacion.OCUPADA);
-        plazaRepository.save(plaza);
         return toResponse(repository.save(entity));
     }
 

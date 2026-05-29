@@ -15,10 +15,13 @@ public class Carrito {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private Boolean disponible;
+
+    @Column(nullable = false, length = 100)
     private String nombre;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_entrada_salida")
+    @JoinColumn(name = "id_entrada_salida", nullable = false)
     private EntradaSalida entradaSalida;
 }

@@ -16,9 +16,16 @@ public class Vehiculo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 30)
     private String color;
+
+    @Column(length = 50)
     private String marca;
+
+    @Column(length = 50)
     private String modelo;
+
+    @Column(nullable = false, length = 15)
     private String placa;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -26,6 +33,6 @@ public class Vehiculo {
     private Apartamento apartamento;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_condominio")
+    @JoinColumn(name = "id_condominio", nullable = false)
     private Condominio condominio;
 }

@@ -4,6 +4,7 @@ import com.condosaas.api.module.parkcontrol.acceso.dto.AccesoRequest;
 import com.condosaas.api.module.parkcontrol.acceso.dto.AccesoResponse;
 import com.condosaas.api.module.parkcontrol.acceso.service.AccesoService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,7 @@ import java.util.List;
 public class AccesoController {
     private final AccesoService service;
 
-    public AccesoController(AccesoService service) {
+    public AccesoController(@Qualifier("accesoParkControlServiceImpl") AccesoService service) {
         this.service = service;
     }
 

@@ -10,7 +10,6 @@ import lombok.*;
 public class AccesoRequest {
     @NotNull
     private Long idVehiculo;
-    @NotNull
     private Long idPlaza;
     private Long idPaseInvitado;
 }

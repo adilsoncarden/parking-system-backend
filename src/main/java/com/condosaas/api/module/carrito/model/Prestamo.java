@@ -19,28 +19,30 @@ public class Prestamo {
     private Long id;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
     private EstadoPrestamo estado;
 
     @Column(name = "hora_fin")
     private LocalDateTime horaFin;
 
-    @Column(name = "hora_inicio")
+    @Column(name = "hora_inicio", nullable = false)
     private LocalDateTime horaInicio;
 
     @Column(name = "monto_multa")
     private Double montoMulta;
 
+    @Column(nullable = false)
     private Boolean multado;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_apartamento")
+    @JoinColumn(name = "id_apartamento", nullable = false)
     private Apartamento apartamento;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_carrito")
+    @JoinColumn(name = "id_carrito", nullable = false)
     private Carrito carrito;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_entrada_salida")
+    @JoinColumn(name = "id_entrada_salida", nullable = false)
     private EntradaSalida entradaSalida;
 }
