@@ -26,22 +26,22 @@ public class AdminController {
         return Map.of("action", "Gestión de torres del condominio", "module", "Torres");
     }*/
 
-    @GetMapping("/pisos")
+    @GetMapping("/gestion-pisos")
     public Map<String, String> pisos() {
         return Map.of("action", "Gestión de niveles y pisos", "module", "Pisos");
     }
 
-    @GetMapping("/apartamentos")
+    @GetMapping("/gestion-apartamentos")
     public Map<String, String> apartamentos() {
         return Map.of("action", "Control de unidades residenciales", "module", "Apartamentos");
     }
 
-    @GetMapping("/carritos")
+    @GetMapping("/gestion-carritos")
     public Map<String, String> carritos() {
         return Map.of("action", "Monitor de carritos de compras/servicios", "module", "Carritos");
     }
 
-    @GetMapping("/config")
+    @GetMapping("/gestion-config")
     public Map<String, String> config() {
         return Map.of("action", "Ajustes globales del SaaS", "module", "Configuración");
     }
