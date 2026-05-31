@@ -39,7 +39,7 @@ public class ApartamentoServiceImpl implements ApartamentoService {
 
     @Override
     public ApartamentoResponseDTO getById(Long id) {
-        Apartamento entity = repository.findById(id)
+        Apartamento entity = repository.findByIdWithRelations(id)
                 .orElseThrow(() -> new EntityNotFoundException("Apartamento no encontrado"));
 
         return mapToDTO(entity);
@@ -51,9 +51,9 @@ public class ApartamentoServiceImpl implements ApartamentoService {
         List<Apartamento> lista;
 
         if (pisoId != null) {
-            lista = repository.findByPisoId(pisoId);
+            lista = repository.findByPisoIdWithRelations(pisoId);
         } else {
-            lista = repository.findAll();
+            lista = repository.findAllWithRelations();
         }
 
         return lista.stream().map(this::mapToDTO).toList();
@@ -62,7 +62,7 @@ public class ApartamentoServiceImpl implements ApartamentoService {
     @Override
     public ApartamentoResponseDTO update(Long id, ApartamentoRequestDTO dto) {
 
-        Apartamento entity = repository.findById(id)
+        Apartamento entity = repository.findByIdWithRelations(id)
                 .orElseThrow(() -> new EntityNotFoundException("Apartamento no encontrado"));
 
         Piso piso = pisoRepository.findById(dto.getPisoId())
