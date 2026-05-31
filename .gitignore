@@ -1,16 +1,8 @@
-# Compiled class file
+# --- JAVA & MAVEN ---
 *.class
-
-# Log file
 *.log
-
-# BlueJ files
 *.ctxt
-
-# Mobile Tools for Java (J2ME)
 .mtj.tmp/
-
-# Package Files #
 *.jar
 *.war
 *.nar
@@ -18,7 +10,29 @@
 *.zip
 *.tar.gz
 *.rar
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+# --- BUILD DIRECTORIES ---
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# --- IDE SPECIFIC (VS Code, IntelliJ, Eclipse) ---
+.settings/
+.project
+.classpath
+.factorypath
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+bin/
+
+# --- CONFIGURATION & SECURITY ---
+# Ignora el archivo con la contraseña real de Supabase
+src/main/resources/application.properties
+
+# --- OS TEMPORARY FILES ---
+.DS_Store
+Thumbs.db
