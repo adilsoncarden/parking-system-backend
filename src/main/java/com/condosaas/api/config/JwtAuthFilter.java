@@ -11,7 +11,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collections;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.List;
 
 public class JwtAuthFilter extends OncePerRequestFilter {
 
@@ -25,33 +27,30 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-        String path = request.getServletPath();
+        String uri = request.getRequestURI();
 
-        if (path.startsWith("/api/auth/")) {
+        if (uri.startsWith("/api/auth/")) {
             filterChain.doFilter(request, response);
             return;
         }
 
         String authorizationHeader = request.getHeader("Authorization");
 
-        if (!StringUtils.hasText(authorizationHeader) || !authorizationHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+        if (StringUtils.hasText(authorizationHeader) && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7).trim();
+            if (!jwtUtils.validateToken(token)) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
 
-        String token = authorizationHeader.substring(7);
-        if (!jwtUtils.validateToken(token)) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
+            String username = jwtUtils.getUsernameFromToken(token);
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                    username,
+                    null,
+                    List.of(new SimpleGrantedAuthority("ROLE_USER")));
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-
-        String username = jwtUtils.getUsernameFromToken(token);
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                username,
-                null,
-                Collections.emptyList());
-        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
     }
