@@ -2,6 +2,9 @@ package com.condosaas.api.module.auth.controller;
 
 import com.condosaas.api.config.JwtUtils;
 import com.condosaas.api.module.auth.dto.LoginRequestDTO;
+import com.condosaas.api.module.auth.dto.LoginResponseDTO;
+import com.condosaas.api.module.auth.dto.UsuarioAuthDTO;
+import com.condosaas.api.module.permiso.service.PermissionAuthorizationService;
 import com.condosaas.api.module.usuario.model.Usuario;
 import com.condosaas.api.module.usuario.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -19,6 +22,7 @@ public class AuthController {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
+    private final PermissionAuthorizationService permissionAuthorizationService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO request) {
@@ -35,10 +39,28 @@ public class AuthController {
             return ResponseEntity.status(403).body("Contraseña incorrecta");
         }
 
-        String token = jwtUtils.generateToken(usuario.getEmail());
+        String rolNombre = usuario.getRol().getNombre();
+        List<String> permisos = permissionAuthorizationService.resolvePermisosForRol(
+                usuario.getRol().getId(), rolNombre);
 
-        return ResponseEntity.ok(Map.of(
-                "token", token,
-                "tipo", "Bearer"));
+        String token = jwtUtils.generateToken(usuario.getEmail(), rolNombre, permisos);
+
+        UsuarioAuthDTO usuarioDto = UsuarioAuthDTO.builder()
+                .id(usuario.getId())
+                .email(usuario.getEmail())
+                .nombres(usuario.getNombres())
+                .apellidos(usuario.getApellidos())
+                .rolId(usuario.getRol().getId())
+                .rolNombre(rolNombre)
+                .build();
+
+        LoginResponseDTO response = LoginResponseDTO.builder()
+                .token(token)
+                .tipo("Bearer")
+                .usuario(usuarioDto)
+                .permisos(permisos)
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 }

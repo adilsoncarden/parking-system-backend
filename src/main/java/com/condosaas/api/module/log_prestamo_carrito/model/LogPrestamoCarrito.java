@@ -5,6 +5,7 @@ import com.condosaas.api.module.usuario.model.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -26,6 +27,27 @@ public class LogPrestamoCarrito {
 
     @Column(name = "fecha_devolucion")
     private LocalDateTime fechaDevolucion;
+
+    @Column(name = "fecha_inicio")
+    private LocalDateTime fechaInicio;
+
+    @Column(name = "fecha_fin")
+    private LocalDateTime fechaFin;
+
+    @Column(name = "tiempo_limite_minutos")
+    private Integer tiempoLimiteMinutos;
+
+    @Column(name = "tiempo_excedido_minutos")
+    private Integer tiempoExcedidoMinutos;
+
+    @Column(name = "monto_penalizacion", precision = 12, scale = 2)
+    private BigDecimal montoPenalizacion;
+
+    @Column(name = "penalizado", columnDefinition = "boolean default false")
+    private Boolean penalizado = false;
+
+    @Column(name = "pagado", columnDefinition = "boolean default true")
+    private Boolean pagado = true;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "estado", nullable = false)
