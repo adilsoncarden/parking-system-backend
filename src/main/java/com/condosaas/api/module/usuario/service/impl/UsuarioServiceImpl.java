@@ -10,6 +10,7 @@ import com.condosaas.api.module.apartamento.model.Apartamento;
 import com.condosaas.api.module.apartamento.repository.ApartamentoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final UsuarioRepository repository;
     private final RolRepository rolRepository;
     private final ApartamentoRepository apartamentoRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UsuarioResponseDTO create(UsuarioRequestDTO dto) {
@@ -41,7 +43,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                 .apellidos(dto.getApellidos())
                 .email(dto.getEmail())
                 .telefono(dto.getTelefono())
-                .password(dto.getPassword())
+                .password(encodePassword(dto.getPassword()))
                 .tipoOcupante(dto.getTipoOcupante())
                 .estado(dto.getEstado())
                 .rol(rol)
@@ -53,7 +55,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public UsuarioResponseDTO getById(Long id) {
-        Usuario entity = repository.findById(id)
+        Usuario entity = repository.findByIdWithRol(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
         return mapToDTO(entity);
@@ -65,11 +67,11 @@ public class UsuarioServiceImpl implements UsuarioService {
         List<Usuario> lista;
 
         if (rolId != null) {
-            lista = repository.findByRolId(rolId);
+            lista = repository.findByRolIdWithRol(rolId);
         } else if (apartamentoId != null) {
-            lista = repository.findByApartamentoId(apartamentoId);
+            lista = repository.findByApartamentoIdWithRol(apartamentoId);
         } else {
-            lista = repository.findAll();
+            lista = repository.findAllWithRol();
         }
 
         return lista.stream().map(this::mapToDTO).toList();
@@ -78,7 +80,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public UsuarioResponseDTO update(Long id, UsuarioRequestDTO dto) {
 
-        Usuario entity = repository.findById(id)
+        Usuario entity = repository.findByIdWithRol(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
         Rol rol = rolRepository.findById(dto.getRolId())
@@ -94,7 +96,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         entity.setApellidos(dto.getApellidos());
         entity.setEmail(dto.getEmail());
         entity.setTelefono(dto.getTelefono());
-        entity.setPassword(dto.getPassword());
+        entity.setPassword(encodePassword(dto.getPassword()));
         entity.setTipoOcupante(dto.getTipoOcupante());
         entity.setEstado(dto.getEstado());
         entity.setRol(rol);
@@ -109,6 +111,16 @@ public class UsuarioServiceImpl implements UsuarioService {
             throw new EntityNotFoundException("Usuario no encontrado");
         }
         repository.deleteById(id);
+    }
+
+    private String encodePassword(String raw) {
+        if (raw == null || raw.isBlank()) {
+            return raw;
+        }
+        if (raw.startsWith("$2a$") || raw.startsWith("$2b$") || raw.startsWith("$2y$")) {
+            return raw;
+        }
+        return passwordEncoder.encode(raw);
     }
 
     private UsuarioResponseDTO mapToDTO(Usuario entity) {

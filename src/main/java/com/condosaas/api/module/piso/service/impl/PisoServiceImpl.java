@@ -38,7 +38,7 @@ public class PisoServiceImpl implements PisoService {
 
     @Override
     public PisoResponseDTO getById(Long id) {
-        Piso entity = repository.findById(id)
+        Piso entity = repository.findByIdWithRelations(id)
                 .orElseThrow(() -> new EntityNotFoundException("Piso no encontrado"));
 
         return mapToDTO(entity);
@@ -50,9 +50,9 @@ public class PisoServiceImpl implements PisoService {
         List<Piso> lista;
 
         if (torreId != null) {
-            lista = repository.findByTorreId(torreId);
+            lista = repository.findByTorreIdWithRelations(torreId);
         } else {
-            lista = repository.findAll();
+            lista = repository.findAllWithRelations();
         }
 
         return lista.stream().map(this::mapToDTO).toList();
@@ -61,7 +61,7 @@ public class PisoServiceImpl implements PisoService {
     @Override
     public PisoResponseDTO update(Long id, PisoRequestDTO dto) {
 
-        Piso entity = repository.findById(id)
+        Piso entity = repository.findByIdWithRelations(id)
                 .orElseThrow(() -> new EntityNotFoundException("Piso no encontrado"));
 
         Torre torre = torreRepository.findById(dto.getTorreId())

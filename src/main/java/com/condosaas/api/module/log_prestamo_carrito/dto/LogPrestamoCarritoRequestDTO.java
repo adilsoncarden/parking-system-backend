@@ -1,7 +1,7 @@
 package com.condosaas.api.module.log_prestamo_carrito.dto;
 
 import com.condosaas.api.module.log_prestamo_carrito.model.EstadoPrestamo;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -10,12 +10,10 @@ import java.time.LocalDateTime;
 @Setter
 public class LogPrestamoCarritoRequestDTO {
 
-    @NotNull
     private LocalDateTime fechaPrestamo;
 
     private LocalDateTime fechaDevolucion;
 
-    @NotNull
     private EstadoPrestamo estado;
 
     @NotNull

@@ -1,6 +1,5 @@
 package com.condosaas.api.config;
 
-import com.condosaas.api.config.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -18,7 +17,10 @@ import java.util.List;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            JwtAuthFilter jwtAuthFilter,
+            PermissionAuthorizationFilter permissionAuthorizationFilter) throws Exception {
         http
                 .cors(cors -> {
                 })
@@ -31,14 +33,10 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> response.sendError(401)))
                 .httpBasic(httpBasic -> httpBasic.disable())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(permissionAuthorizationFilter, JwtAuthFilter.class);
 
         return http.build();
-    }
-
-    @Bean
-    public JwtAuthFilter jwtAuthFilter(JwtUtils jwtUtils) {
-        return new JwtAuthFilter(jwtUtils);
     }
 
     @Bean
@@ -51,7 +49,8 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowedOrigins(List.of("http://localhost:5173", "http://127.0.0.1:5173"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        config.setExposedHeaders(List.of("Authorization"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 

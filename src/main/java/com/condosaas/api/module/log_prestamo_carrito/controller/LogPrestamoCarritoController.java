@@ -38,6 +38,16 @@ public class LogPrestamoCarritoController {
         return ResponseEntity.ok(service.update(id, dto));
     }
 
+    @PostMapping("/{id}/devolver")
+    public ResponseEntity<LogPrestamoCarritoResponseDTO> devolver(@PathVariable Long id) {
+        return ResponseEntity.ok(service.registrarDevolucion(id));
+    }
+
+    @PatchMapping("/{id}/pagar")
+    public ResponseEntity<LogPrestamoCarritoResponseDTO> pagar(@PathVariable Long id) {
+        return ResponseEntity.ok(service.marcarPagado(id));
+    }
+
     @DeleteMapping("/{id}/delete")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
