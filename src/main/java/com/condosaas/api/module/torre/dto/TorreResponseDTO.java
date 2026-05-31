@@ -1,11 +1,14 @@
 package com.condosaas.api.module.torre.dto;
 
 import com.condosaas.api.module.torre.model.EstadoTorre;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import lombok.*;
 
 @Getter
 @Setter
 @Builder
+@JsonPropertyOrder({ "id", "nombre", "condominioId", "condominioNombre", "estado" })
 public class TorreResponseDTO {
 
     private Long id;
