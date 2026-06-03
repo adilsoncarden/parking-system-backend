@@ -1,6 +1,5 @@
 package com.condosaas.api.module.condominio.dto;
 
-import com.condosaas.api.module.condominio.model.EstadoCondominio;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import lombok.*;
@@ -8,7 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-@JsonPropertyOrder({ "id", "nombre", "email", "telefono", "direccion", "estado" })
+@JsonPropertyOrder({ "id", "nombre", "email", "telefono", "direccion" })
 public class CondominioResponseDTO {
 
     private Long id;
@@ -16,5 +15,4 @@ public class CondominioResponseDTO {
     private String direccion;
     private String telefono;
     private String email;
-    private EstadoCondominio estado;
 }

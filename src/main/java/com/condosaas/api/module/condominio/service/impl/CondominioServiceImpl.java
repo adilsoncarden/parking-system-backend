@@ -26,7 +26,6 @@ public class CondominioServiceImpl implements CondominioService {
                 .direccion(dto.getDireccion())
                 .telefono(dto.getTelefono())
                 .email(dto.getEmail())
-                .estado(dto.getEstado())
                 .build();
 
         return mapToDTO(repository.save(entity));
@@ -41,17 +40,8 @@ public class CondominioServiceImpl implements CondominioService {
     }
 
     @Override
-    public List<CondominioResponseDTO> getAll(Long estado) {
-        List<Condominio> lista;
-
-        if (estado != null) {
-            EstadoCondominio est = EstadoCondominio.values()[estado.intValue()];
-            lista = repository.findByEstado(est);
-        } else {
-            lista = repository.findAll();
-        }
-
-        return lista.stream().map(this::mapToDTO).toList();
+    public List<CondominioResponseDTO> getAll() {
+        return repository.findAll().stream().map(this::mapToDTO).toList();
     }
 
     @Override
@@ -64,7 +54,6 @@ public class CondominioServiceImpl implements CondominioService {
         entity.setDireccion(dto.getDireccion());
         entity.setTelefono(dto.getTelefono());
         entity.setEmail(dto.getEmail());
-        entity.setEstado(dto.getEstado());
 
         return mapToDTO(repository.save(entity));
     }
@@ -84,7 +73,6 @@ public class CondominioServiceImpl implements CondominioService {
                 .direccion(entity.getDireccion())
                 .telefono(entity.getTelefono())
                 .email(entity.getEmail())
-                .estado(entity.getEstado())
                 .build();
     }
 }
