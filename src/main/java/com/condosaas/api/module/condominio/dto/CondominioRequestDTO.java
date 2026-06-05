@@ -1,6 +1,5 @@
 package com.condosaas.api.module.condominio.dto;
 
-import com.condosaas.api.module.condominio.model.EstadoCondominio;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
@@ -18,7 +17,4 @@ public class CondominioRequestDTO {
 
     @Email
     private String email;
-
-    @NotNull
-    private EstadoCondominio estado;
 }

@@ -29,7 +29,6 @@ public class PisoServiceImpl implements PisoService {
 
         Piso entity = Piso.builder()
                 .numero(dto.getNumero())
-                .estado(dto.getEstado())
                 .torre(torre)
                 .build();
 
@@ -68,7 +67,6 @@ public class PisoServiceImpl implements PisoService {
                 .orElseThrow(() -> new EntityNotFoundException("Torre no encontrada"));
 
         entity.setNumero(dto.getNumero());
-        entity.setEstado(dto.getEstado());
         entity.setTorre(torre);
 
         return mapToDTO(repository.save(entity));
@@ -86,7 +84,6 @@ public class PisoServiceImpl implements PisoService {
         return PisoResponseDTO.builder()
                 .id(entity.getId())
                 .numero(entity.getNumero())
-                .estado(entity.getEstado())
                 .torreId(entity.getTorre().getId())
                 .torreNombre(entity.getTorre().getNombre())
                 .condominioId(entity.getTorre().getCondominio().getId())

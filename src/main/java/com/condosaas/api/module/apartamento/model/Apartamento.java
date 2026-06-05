@@ -24,7 +24,6 @@ public class Apartamento {
     @Column(name = "area")
     private Double area;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "estado", nullable = false)
     private EstadoApartamento estado;
 
