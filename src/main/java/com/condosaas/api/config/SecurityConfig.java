@@ -19,7 +19,7 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
-    // Se integró la URL de Render de release/v2.0 en el valor por defecto para no perder acceso en producción
+    // Se integró la URL de Render en el valor por defecto para no perder acceso en producción
     @Value("${cors.allowed-origins:http://localhost:5173,http://127.0.0.1:5173,https://parking-system-frontend-vxtm.onrender.com}")
     private String allowedOrigins;
 
@@ -32,7 +32,8 @@ public class SecurityConfig {
             JwtAccessDeniedHandler jwtAccessDeniedHandler) throws Exception {
         
         http
-                .cors(cors -> {})
+                // Mantenido de 'main': Referencia explícita al bean de configuración de CORS
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .anonymous(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -40,10 +41,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/error").permitAll()
-                        .anyRequest().authenticated()) // Mantenido de release/v2.0 para asegurar la protección de la API
+                        .anyRequest().authenticated()) 
+                // Mantenido de 'release/v2.0': Manejo de excepciones más robusto
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(jwtAuthEntryPoint)
-                        .accessDeniedHandler(jwtAccessDeniedHandler)) // Mantenido de develop para un manejo de errores más robusto
+                        .accessDeniedHandler(jwtAccessDeniedHandler)) 
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
@@ -62,7 +64,7 @@ public class SecurityConfig {
 
         CorsConfiguration config = new CorsConfiguration();
 
-        // Mantenido de develop: Procesamiento dinámico de los orígenes permitidos
+        // Mantenido de 'release/v2.0': Procesamiento dinámico de los orígenes permitidos
         List<String> origins = Arrays.stream(allowedOrigins.split(","))
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
@@ -70,8 +72,6 @@ public class SecurityConfig {
                 
         config.setAllowedOrigins(origins);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        
-        // Mantenido de release/v2.0: Permitir todos los headers para evitar bloqueos en el frontend
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("Authorization"));
         config.setAllowCredentials(true);
