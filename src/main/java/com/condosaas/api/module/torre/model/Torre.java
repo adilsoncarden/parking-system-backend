@@ -21,10 +21,6 @@ public class Torre {
     @Column(name = "nombre", nullable = false)
     private String nombre;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "estado", nullable = false)
-    private EstadoTorre estado;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_condominio", nullable = false)
     private Condominio condominio;

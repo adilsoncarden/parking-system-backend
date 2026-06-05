@@ -10,7 +10,7 @@ public interface CondominioService {
 
     CondominioResponseDTO getById(Long id);
 
-    List<CondominioResponseDTO> getAll(Long estado);
+    List<CondominioResponseDTO> getAll();
 
     CondominioResponseDTO update(Long id, CondominioRequestDTO dto);
 

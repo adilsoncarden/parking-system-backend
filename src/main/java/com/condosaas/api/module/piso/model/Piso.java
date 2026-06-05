@@ -21,10 +21,6 @@ public class Piso {
     @Column(name = "numero", nullable = false)
     private Integer numero;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "estado", nullable = false)
-    private EstadoPiso estado;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_torre", nullable = false)
     private Torre torre;

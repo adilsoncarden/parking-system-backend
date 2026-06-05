@@ -21,9 +21,8 @@ public class CondominioController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<CondominioResponseDTO>> getAll(
-            @RequestParam(required = false) Long estado) {
-        return ResponseEntity.ok(service.getAll(estado));
+    public ResponseEntity<List<CondominioResponseDTO>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 
     @GetMapping("/{id}")

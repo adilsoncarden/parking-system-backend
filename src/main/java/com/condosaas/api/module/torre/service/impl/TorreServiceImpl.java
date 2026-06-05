@@ -29,7 +29,6 @@ public class TorreServiceImpl implements TorreService {
 
         Torre entity = Torre.builder()
                 .nombre(dto.getNombre())
-                .estado(dto.getEstado())
                 .condominio(condominio)
                 .build();
 
@@ -68,7 +67,6 @@ public class TorreServiceImpl implements TorreService {
                 .orElseThrow(() -> new EntityNotFoundException("Condominio no encontrado"));
 
         entity.setNombre(dto.getNombre());
-        entity.setEstado(dto.getEstado());
         entity.setCondominio(condominio);
 
         return mapToDTO(repository.save(entity));
@@ -86,7 +84,6 @@ public class TorreServiceImpl implements TorreService {
         return TorreResponseDTO.builder()
                 .id(entity.getId())
                 .nombre(entity.getNombre())
-                .estado(entity.getEstado())
                 .condominioId(entity.getCondominio().getId())
                 .condominioNombre(entity.getCondominio().getNombre())
                 .build();
