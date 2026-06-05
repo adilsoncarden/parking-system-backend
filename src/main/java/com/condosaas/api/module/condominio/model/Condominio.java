@@ -28,8 +28,4 @@ public class Condominio {
 
     @Column(name = "email")
     private String email;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "estado", nullable = false)
-    private EstadoCondominio estado;
 }
