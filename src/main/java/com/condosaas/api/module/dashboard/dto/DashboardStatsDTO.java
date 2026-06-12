@@ -6,12 +6,12 @@ import lombok.Getter;
 @Getter
 @Builder
 public class DashboardStatsDTO {
-    private long totalCondominios;
-    private long totalTorres;
-    private long totalPisos;
-    private long totalApartamentos;
-    private long apartamentosDisponibles;
-    private long apartamentosOcupados;
-    private long apartamentosMantenimiento;
-    private long apartamentosInactivos;
+    private final long totalCondominios;
+    private final long totalTorres;
+    private final long totalPisos;
+    private final long totalApartamentos;
+    private final long apartamentosDisponibles;
+    private final long apartamentosOcupados;
+    private final long apartamentosMantenimiento;
+    private final long apartamentosInactivos;
 }

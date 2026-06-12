@@ -1,0 +1,32 @@
+{
+  "properties": [
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "description": "Clave secreta usada para firmar los tokens JWT (HS256). Debe tener al menos 32 bytes."
+    },
+    {
+      "name": "jwt.expiration",
+      "type": "java.lang.Long",
+      "description": "Tiempo de expiración del token JWT en milisegundos.",
+      "defaultValue": 86400000
+    },
+    {
+      "name": "cors.allowed-origins",
+      "type": "java.lang.String",
+      "description": "Lista separada por comas de orígenes permitidos para CORS."
+    },
+    {
+      "name": "carrito.penalizacion.tiempo-limite-minutos",
+      "type": "java.lang.Integer",
+      "description": "Minutos permitidos antes de aplicar penalización a un préstamo de carrito.",
+      "defaultValue": 15
+    },
+    {
+      "name": "carrito.penalizacion.tarifa-por-minuto",
+      "type": "java.math.BigDecimal",
+      "description": "Tarifa cobrada por cada minuto excedido en la devolución de un carrito.",
+      "defaultValue": 1.00
+    }
+  ]
+}
