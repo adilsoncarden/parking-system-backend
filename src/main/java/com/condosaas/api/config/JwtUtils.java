@@ -3,10 +3,8 @@ package com.condosaas.api.config;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +22,7 @@ public class JwtUtils {
 
     public static final String CLAIM_PERMISOS = "permisos";
     public static final String CLAIM_ROL = "rol";
+    public static final String CLAIM_CONDOMINIO = "condominioId";
 
     public enum TokenStatus {
         VALID, EXPIRED, INVALID
@@ -70,18 +69,22 @@ public class JwtUtils {
         this.expirationMs = expirationMs;
     }
 
-    public String generateToken(String username, String rolNombre, List<String> permisos) {
+    public String generateToken(String username, String rolNombre, Long condominioId, List<String> permisos) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expirationMs);
 
-        return Jwts.builder()
+        var builder = Jwts.builder()
                 .setSubject(username)
                 .claim(CLAIM_ROL, rolNombre)
                 .claim(CLAIM_PERMISOS, permisos != null ? permisos : Collections.emptyList())
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
+                .signWith(key, SignatureAlgorithm.HS256);
+
+        if (condominioId != null) {
+            builder.claim(CLAIM_CONDOMINIO, condominioId);
+        }
+        return builder.compact();
     }
 
     public TokenValidation validateTokenDetailed(String token) {
@@ -95,11 +98,8 @@ public class JwtUtils {
         } catch (ExpiredJwtException ex) {
             log.warn("Token JWT expirado: {}", ex.getMessage());
             return TokenValidation.expired();
-        } catch (MalformedJwtException | SignatureException | IllegalArgumentException ex) {
-            log.warn("Token JWT inválido: {}", ex.getMessage());
-            return TokenValidation.invalid();
         } catch (Exception ex) {
-            log.warn("Error al validar JWT: {}", ex.getMessage());
+            log.warn("Token JWT inválido: {}", ex.getMessage());
             return TokenValidation.invalid();
         }
     }
@@ -120,7 +120,6 @@ public class JwtUtils {
         return getClaims(token).getSubject();
     }
 
-    @SuppressWarnings("unchecked")
     public List<String> getPermisosFromToken(String token) {
         Claims claims = getClaims(token);
         Object raw = claims.get(CLAIM_PERMISOS);
