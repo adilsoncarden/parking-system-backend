@@ -2,6 +2,7 @@ package com.condosaas.api.module.usuario.model;
 
 import com.condosaas.api.module.rol.model.Rol;
 import com.condosaas.api.module.apartamento.model.Apartamento;
+import com.condosaas.api.module.condominio.model.Condominio;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -49,4 +50,9 @@ public class Usuario {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_apartamento")
     private Apartamento apartamento;
+
+    // Condominio al que está ligado un admin de condominio (null para el superadmin).
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_condominio")
+    private Condominio condominio;
 }

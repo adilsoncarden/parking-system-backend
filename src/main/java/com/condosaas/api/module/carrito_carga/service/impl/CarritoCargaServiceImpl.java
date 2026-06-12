@@ -6,6 +6,7 @@ import com.condosaas.api.module.carrito_carga.repository.CarritoCargaRepository;
 import com.condosaas.api.module.carrito_carga.service.CarritoCargaService;
 import com.condosaas.api.module.condominio.model.Condominio;
 import com.condosaas.api.module.condominio.repository.CondominioRepository;
+import com.condosaas.api.security.CurrentUser;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,10 +21,12 @@ public class CarritoCargaServiceImpl implements CarritoCargaService {
 
     private final CarritoCargaRepository repository;
     private final CondominioRepository condominioRepository;
+    private final CurrentUser currentUser;
 
     @Override
     public CarritoCargaResponseDTO create(CarritoCargaRequestDTO dto) {
 
+        currentUser.assertCondominio(dto.getCondominioId());
         Condominio condominio = condominioRepository.findById(dto.getCondominioId())
                 .orElseThrow(() -> new EntityNotFoundException("Condominio no encontrado"));
 
@@ -41,6 +44,7 @@ public class CarritoCargaServiceImpl implements CarritoCargaService {
     public CarritoCargaResponseDTO getById(Long id) {
         CarritoCarga entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Carrito no encontrado"));
+        currentUser.assertCondominio(entity.getCondominio().getId());
 
         return mapToDTO(entity);
     }
@@ -48,13 +52,11 @@ public class CarritoCargaServiceImpl implements CarritoCargaService {
     @Override
     public List<CarritoCargaResponseDTO> getAll(Long condominioId) {
 
-        List<CarritoCarga> lista;
+        Long scoped = currentUser.resolveFilter(condominioId);
 
-        if (condominioId != null) {
-            lista = repository.findByCondominioId(condominioId);
-        } else {
-            lista = repository.findAll();
-        }
+        List<CarritoCarga> lista = (scoped != null)
+                ? repository.findByCondominioId(scoped)
+                : repository.findAll();
 
         return lista.stream().map(this::mapToDTO).toList();
     }
@@ -64,6 +66,8 @@ public class CarritoCargaServiceImpl implements CarritoCargaService {
 
         CarritoCarga entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Carrito no encontrado"));
+        currentUser.assertCondominio(entity.getCondominio().getId());
+        currentUser.assertCondominio(dto.getCondominioId());
 
         Condominio condominio = condominioRepository.findById(dto.getCondominioId())
                 .orElseThrow(() -> new EntityNotFoundException("Condominio no encontrado"));
@@ -78,10 +82,10 @@ public class CarritoCargaServiceImpl implements CarritoCargaService {
 
     @Override
     public void delete(Long id) {
-        if (!repository.existsById(id)) {
-            throw new EntityNotFoundException("Carrito no encontrado");
-        }
-        repository.deleteById(id);
+        CarritoCarga entity = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Carrito no encontrado"));
+        currentUser.assertCondominio(entity.getCondominio().getId());
+        repository.delete(entity);
     }
 
     private CarritoCargaResponseDTO mapToDTO(CarritoCarga entity) {

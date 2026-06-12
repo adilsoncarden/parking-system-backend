@@ -10,15 +10,27 @@ import java.util.Optional;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
-    @Query("SELECT u FROM Usuario u JOIN FETCH u.rol WHERE u.email = :email")
+    @Query("SELECT u FROM Usuario u JOIN FETCH u.rol LEFT JOIN FETCH u.condominio WHERE u.email = :email")
     Optional<Usuario> findByEmail(@Param("email") String email);
 
     @Query("""
             SELECT u FROM Usuario u
             JOIN FETCH u.rol
             LEFT JOIN FETCH u.apartamento
+            LEFT JOIN FETCH u.condominio
             """)
     List<Usuario> findAllWithRol();
+
+    @Query("""
+            SELECT DISTINCT u FROM Usuario u
+            JOIN FETCH u.rol
+            LEFT JOIN FETCH u.apartamento ap
+            LEFT JOIN FETCH u.condominio
+            LEFT JOIN ap.piso p
+            LEFT JOIN p.torre t
+            WHERE u.condominio.id = :condominioId OR t.condominio.id = :condominioId
+            """)
+    List<Usuario> findAllByCondominioScope(@Param("condominioId") Long condominioId);
 
     @Query("""
             SELECT u FROM Usuario u

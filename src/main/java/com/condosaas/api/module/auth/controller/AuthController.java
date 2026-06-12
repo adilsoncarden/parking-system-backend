@@ -43,7 +43,10 @@ public class AuthController {
         List<String> permisos = permissionAuthorizationService.resolvePermisosForRol(
                 usuario.getRol().getId(), rolNombre);
 
-        String token = jwtUtils.generateToken(usuario.getEmail(), rolNombre, permisos);
+        Long condominioId = usuario.getCondominio() != null ? usuario.getCondominio().getId() : null;
+        String condominioNombre = usuario.getCondominio() != null ? usuario.getCondominio().getNombre() : null;
+
+        String token = jwtUtils.generateToken(usuario.getEmail(), rolNombre, condominioId, permisos);
 
         UsuarioAuthDTO usuarioDto = UsuarioAuthDTO.builder()
                 .id(usuario.getId())
@@ -52,6 +55,8 @@ public class AuthController {
                 .apellidos(usuario.getApellidos())
                 .rolId(usuario.getRol().getId())
                 .rolNombre(rolNombre)
+                .condominioId(condominioId)
+                .condominioNombre(condominioNombre)
                 .build();
 
         LoginResponseDTO response = LoginResponseDTO.builder()

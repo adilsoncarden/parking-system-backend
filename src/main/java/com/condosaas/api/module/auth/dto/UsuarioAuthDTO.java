@@ -13,4 +13,6 @@ public class UsuarioAuthDTO {
     private String apellidos;
     private Long rolId;
     private String rolNombre;
+    private Long condominioId;
+    private String condominioNombre;
 }

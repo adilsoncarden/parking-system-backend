@@ -22,8 +22,9 @@ public class ApartamentoController {
 
     @GetMapping("")
     public ResponseEntity<List<ApartamentoResponseDTO>> getAll(
-            @RequestParam(required = false) Long pisoId) {
-        return ResponseEntity.ok(service.getAll(pisoId));
+            @RequestParam(required = false) Long pisoId,
+            @RequestParam(required = false) Long condominioId) {
+        return ResponseEntity.ok(service.getAll(pisoId, condominioId));
     }
 
     @GetMapping("/{id}")
