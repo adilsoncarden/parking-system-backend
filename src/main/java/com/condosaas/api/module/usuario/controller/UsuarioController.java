@@ -23,8 +23,9 @@ public class UsuarioController {
     @GetMapping("")
     public ResponseEntity<List<UsuarioResponseDTO>> getAll(
             @RequestParam(required = false) Long rolId,
-            @RequestParam(required = false) Long apartamentoId) {
-        return ResponseEntity.ok(service.getAll(rolId, apartamentoId));
+            @RequestParam(required = false) Long apartamentoId,
+            @RequestParam(required = false) Long condominioId) {
+        return ResponseEntity.ok(service.getAll(rolId, apartamentoId, condominioId));
     }
 
     @GetMapping("/{id}")

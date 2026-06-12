@@ -4,6 +4,7 @@ import com.condosaas.api.module.condominio.dto.*;
 import com.condosaas.api.module.condominio.model.*;
 import com.condosaas.api.module.condominio.repository.CondominioRepository;
 import com.condosaas.api.module.condominio.service.CondominioService;
+import com.condosaas.api.security.CurrentUser;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.List;
 public class CondominioServiceImpl implements CondominioService {
 
     private final CondominioRepository repository;
+    private final CurrentUser currentUser;
 
     @Override
     public CondominioResponseDTO create(CondominioRequestDTO dto) {
@@ -33,6 +35,7 @@ public class CondominioServiceImpl implements CondominioService {
 
     @Override
     public CondominioResponseDTO getById(Long id) {
+        currentUser.assertCondominio(id);
         Condominio entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Condominio no encontrado"));
 
@@ -41,12 +44,20 @@ public class CondominioServiceImpl implements CondominioService {
 
     @Override
     public List<CondominioResponseDTO> getAll() {
+        // El admin de condominio solo ve el suyo.
+        if (currentUser.isScoped()) {
+            return repository.findById(currentUser.condominioId())
+                    .map(this::mapToDTO)
+                    .map(List::of)
+                    .orElseGet(List::of);
+        }
         return repository.findAll().stream().map(this::mapToDTO).toList();
     }
 
     @Override
     public CondominioResponseDTO update(Long id, CondominioRequestDTO dto) {
 
+        currentUser.assertCondominio(id);
         Condominio entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Condominio no encontrado"));
 
@@ -60,6 +71,7 @@ public class CondominioServiceImpl implements CondominioService {
 
     @Override
     public void delete(Long id) {
+        currentUser.assertCondominio(id);
         if (!repository.existsById(id)) {
             throw new EntityNotFoundException("Condominio no encontrado");
         }

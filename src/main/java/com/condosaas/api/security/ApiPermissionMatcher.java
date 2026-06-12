@@ -36,6 +36,11 @@ public class ApiPermissionMatcher {
             rule("PUT", "/api/apartamentos/\\d+/update", PermisoCatalog.EDITAR_APARTAMENTOS),
             rule("DELETE", "/api/apartamentos/\\d+/delete", PermisoCatalog.ELIMINAR_APARTAMENTOS),
 
+            rule("GET", "/api/entradas(/.*)?", PermisoCatalog.VER_ENTRADAS),
+            rule("POST", "/api/entradas/create", PermisoCatalog.CREAR_ENTRADAS),
+            rule("PUT", "/api/entradas/\\d+/update", PermisoCatalog.EDITAR_ENTRADAS),
+            rule("DELETE", "/api/entradas/\\d+/delete", PermisoCatalog.ELIMINAR_ENTRADAS),
+
             rule("GET", "/api/carritos(/.*)?", PermisoCatalog.VER_CARRITOS),
             rule("POST", "/api/carritos/create", PermisoCatalog.CREAR_CARRITOS),
             rule("PUT", "/api/carritos/\\d+/update", PermisoCatalog.EDITAR_CARRITOS),

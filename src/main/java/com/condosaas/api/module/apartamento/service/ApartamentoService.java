@@ -10,7 +10,7 @@ public interface ApartamentoService {
 
     ApartamentoResponseDTO getById(Long id);
 
-    List<ApartamentoResponseDTO> getAll(Long pisoId);
+    List<ApartamentoResponseDTO> getAll(Long pisoId, Long condominioId);
 
     ApartamentoResponseDTO update(Long id, ApartamentoRequestDTO dto);
 

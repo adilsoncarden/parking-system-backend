@@ -9,7 +9,6 @@ import com.condosaas.api.module.permiso.service.PermisoService;
 import com.condosaas.api.module.permiso.service.PermissionAuthorizationService;
 import com.condosaas.api.module.rol.model.Rol;
 import com.condosaas.api.module.rol.repository.RolRepository;
-import com.condosaas.api.security.PermisoCatalog;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

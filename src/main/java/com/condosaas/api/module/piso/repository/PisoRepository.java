@@ -32,4 +32,12 @@ public interface PisoRepository extends JpaRepository<Piso, Long> {
             WHERE p.id = :id
             """)
     Optional<Piso> findByIdWithRelations(@Param("id") Long id);
+
+    @Query("""
+            SELECT p FROM Piso p
+            JOIN FETCH p.torre t
+            JOIN FETCH t.condominio c
+            WHERE c.id = :condominioId
+            """)
+    List<Piso> findByCondominioIdWithRelations(@Param("condominioId") Long condominioId);
 }

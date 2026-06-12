@@ -83,6 +83,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     authorities.add(new SimpleGrantedAuthority(permiso));
                 }
             }
+            Object condClaim = claims.get(JwtUtils.CLAIM_CONDOMINIO);
+            if (condClaim != null) {
+                authorities.add(new SimpleGrantedAuthority(
+                        com.condosaas.api.security.CurrentUser.CONDO_AUTHORITY_PREFIX + condClaim));
+            }
 
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(username, null, authorities);

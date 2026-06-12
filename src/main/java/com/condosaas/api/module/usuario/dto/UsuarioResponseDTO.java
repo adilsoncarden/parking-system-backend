@@ -21,4 +21,7 @@ public class UsuarioResponseDTO {
     private String rolNombre;
 
     private Long apartamentoId;
+
+    private Long condominioId;
+    private String condominioNombre;
 }
