@@ -21,4 +21,9 @@ public class LogPrestamoCarritoRequestDTO {
 
     @NotNull
     private Long usuarioId;
+
+    // Entrada por la que sale el carrito (opcional). La de devolución se envía al devolver.
+    private Long entradaSalidaId;
+
+    private Long entradaDevolucionId;
 }

@@ -39,8 +39,9 @@ public class LogPrestamoCarritoController {
     }
 
     @PostMapping("/{id}/devolver")
-    public ResponseEntity<LogPrestamoCarritoResponseDTO> devolver(@PathVariable Long id) {
-        return ResponseEntity.ok(service.registrarDevolucion(id));
+    public ResponseEntity<LogPrestamoCarritoResponseDTO> devolver(@PathVariable Long id,
+            @RequestParam(required = false) Long entradaDevolucionId) {
+        return ResponseEntity.ok(service.registrarDevolucion(id, entradaDevolucionId));
     }
 
     @PatchMapping("/{id}/pagar")
