@@ -30,4 +30,9 @@ public class LogPrestamoCarritoResponseDTO {
 
     private Long usuarioId;
     private String usuarioNombre;
+
+    private Long entradaSalidaId;
+    private String entradaSalidaNombre;
+    private Long entradaDevolucionId;
+    private String entradaDevolucionNombre;
 }

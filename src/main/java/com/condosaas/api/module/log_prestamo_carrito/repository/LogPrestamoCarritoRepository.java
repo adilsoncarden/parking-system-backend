@@ -53,4 +53,12 @@ public interface LogPrestamoCarritoRepository extends JpaRepository<LogPrestamoC
             WHERE p.id = :id
             """)
     Optional<LogPrestamoCarrito> findByIdWithRelations(@Param("id") Long id);
+
+    @Query("""
+            SELECT p FROM LogPrestamoCarrito p
+            JOIN FETCH p.carrito c
+            JOIN FETCH p.usuario
+            WHERE c.condominio.id = :condominioId
+            """)
+    List<LogPrestamoCarrito> findByCarritoCondominioIdWithRelations(@Param("condominioId") Long condominioId);
 }
