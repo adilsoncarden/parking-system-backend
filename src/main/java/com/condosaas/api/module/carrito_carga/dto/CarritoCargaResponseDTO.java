@@ -15,4 +15,7 @@ public class CarritoCargaResponseDTO {
 
     private Long condominioId;
     private String condominioNombre;
+
+    private Long entradaId;
+    private String entradaNombre;
 }
