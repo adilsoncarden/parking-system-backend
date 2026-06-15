@@ -91,7 +91,10 @@ public class PermisoServiceImpl implements PermisoService {
             throw new IllegalArgumentException("El rol ADMIN tiene todos los permisos automáticamente");
         }
 
+        // flush() obliga a ejecutar el DELETE antes de los INSERT siguientes; sin esto,
+        // Hibernate ordena los INSERT primero y choca con la constraint única (id_rol,id_permiso).
         rolPermisoRepository.deleteByRolId(rolId);
+        rolPermisoRepository.flush();
 
         List<Long> permisoIds = dto.getPermisoIds() != null ? dto.getPermisoIds() : List.of();
         List<RolPermiso> nuevos = new ArrayList<>();

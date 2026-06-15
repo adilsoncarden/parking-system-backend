@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -31,12 +32,12 @@ public class AuthController {
                 .findByEmail(request.getEmail())
                 .orElse(null);
 
-        if (usuario == null) {
-            return ResponseEntity.status(404).body("Usuario no encontrado");
-        }
-
-        if (!passwordEncoder.matches(request.getPassword(), usuario.getPassword())) {
-            return ResponseEntity.status(403).body("Contraseña incorrecta");
+        // Login fallido (email inexistente o contraseña mala): se responde 200 con
+        // success:false en vez de 4xx, para que el navegador NO marque un error rojo en
+        // consola en cada intento fallido. Mensaje genérico por seguridad (no revela si
+        // el email existe). El frontend detecta el fallo por la ausencia de token.
+        if (usuario == null || !passwordEncoder.matches(request.getPassword(), usuario.getPassword())) {
+            return ResponseEntity.ok(Map.of("success", false, "message", "Credenciales incorrectas"));
         }
 
         String rolNombre = usuario.getRol().getNombre();
