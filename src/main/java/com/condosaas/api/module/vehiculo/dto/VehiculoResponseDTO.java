@@ -17,4 +17,14 @@ public class VehiculoResponseDTO {
 
     private Long usuarioId;
     private String usuarioNombre;
+
+    // Datos del dueño (para el módulo Parking: dónde vive y qué tipo de ocupante es)
+    private Long apartamentoId;
+    private String unidad;        // número del apartamento (departamento) del dueño
+    private String tipoOcupante;  // PROPIETARIO | INQUILINO | VISITANTE
+
+    // Ubicación completa del dueño (para la ficha al escanear la placa)
+    private Integer pisoNumero;
+    private String torreNombre;
+    private String condominioNombre;
 }

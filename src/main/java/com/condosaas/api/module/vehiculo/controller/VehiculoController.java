@@ -31,6 +31,11 @@ public class VehiculoController {
         return ResponseEntity.ok(service.getById(id));
     }
 
+    @GetMapping("/by-placa/{placa}")
+    public ResponseEntity<VehiculoResponseDTO> getByPlaca(@PathVariable String placa) {
+        return ResponseEntity.ok(service.getByPlaca(placa));
+    }
+
     @PutMapping("/{id}/update")
     public ResponseEntity<VehiculoResponseDTO> update(@PathVariable Long id,
             @RequestBody VehiculoRequestDTO dto) {
