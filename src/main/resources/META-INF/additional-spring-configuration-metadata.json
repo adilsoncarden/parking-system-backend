@@ -27,6 +27,13 @@
       "type": "java.math.BigDecimal",
       "description": "Tarifa cobrada por cada minuto excedido en la devolución de un carrito.",
       "defaultValue": 1.00
+    },
+    {
+      "name": "app.condominio.max-entradas",
+      "type": "java.lang.Long",
+      "sourceType": "com.condosaas.api.config.CondominioProperties",
+      "description": "Máximo de entradas (puertas) configurables por condominio.",
+      "defaultValue": 2
     }
   ]
 }
