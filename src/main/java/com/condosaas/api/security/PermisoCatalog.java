@@ -50,6 +50,39 @@ public final class PermisoCatalog {
 
     public static final String GESTIONAR_PERMISOS = "GESTIONAR_PERMISOS";
 
+    // ── Parking (ParkControl) ─────────────────────────────────────────────
+    public static final String VER_PARKING = "VER_PARKING";
+
+    public static final String VER_VEHICULOS = "VER_VEHICULOS";
+    public static final String CREAR_VEHICULOS = "CREAR_VEHICULOS";
+    public static final String EDITAR_VEHICULOS = "EDITAR_VEHICULOS";
+    public static final String ELIMINAR_VEHICULOS = "ELIMINAR_VEHICULOS";
+
+    public static final String VER_ESTACIONAMIENTOS = "VER_ESTACIONAMIENTOS";
+    public static final String CREAR_ESTACIONAMIENTOS = "CREAR_ESTACIONAMIENTOS";
+    public static final String EDITAR_ESTACIONAMIENTOS = "EDITAR_ESTACIONAMIENTOS";
+    public static final String ELIMINAR_ESTACIONAMIENTOS = "ELIMINAR_ESTACIONAMIENTOS";
+
+    public static final String VER_ZONAS = "VER_ZONAS";
+    public static final String CREAR_ZONAS = "CREAR_ZONAS";
+    public static final String EDITAR_ZONAS = "EDITAR_ZONAS";
+    public static final String ELIMINAR_ZONAS = "ELIMINAR_ZONAS";
+
+    public static final String VER_PLAZAS = "VER_PLAZAS";
+    public static final String CREAR_PLAZAS = "CREAR_PLAZAS";
+    public static final String EDITAR_PLAZAS = "EDITAR_PLAZAS";
+    public static final String ELIMINAR_PLAZAS = "ELIMINAR_PLAZAS";
+
+    public static final String VER_PASES = "VER_PASES";
+    public static final String CREAR_PASES = "CREAR_PASES";
+    public static final String EDITAR_PASES = "EDITAR_PASES";
+    public static final String ELIMINAR_PASES = "ELIMINAR_PASES";
+
+    public static final String VER_ACCESOS = "VER_ACCESOS";
+    public static final String CREAR_ACCESOS = "CREAR_ACCESOS";
+    public static final String EDITAR_ACCESOS = "EDITAR_ACCESOS";
+    public static final String ELIMINAR_ACCESOS = "ELIMINAR_ACCESOS";
+
     private PermisoCatalog() {
     }
 
@@ -64,6 +97,13 @@ public final class PermisoCatalog {
                 VER_CARRITOS, CREAR_CARRITOS, EDITAR_CARRITOS, ELIMINAR_CARRITOS,
                 VER_PRESTAMOS, CREAR_PRESTAMOS, EDITAR_PRESTAMOS, ELIMINAR_PRESTAMOS,
                 VER_CONFIGURACION, CREAR_CONFIGURACION, EDITAR_CONFIGURACION, ELIMINAR_CONFIGURACION,
-                GESTIONAR_PERMISOS);
+                GESTIONAR_PERMISOS,
+                VER_PARKING,
+                VER_VEHICULOS, CREAR_VEHICULOS, EDITAR_VEHICULOS, ELIMINAR_VEHICULOS,
+                VER_ESTACIONAMIENTOS, CREAR_ESTACIONAMIENTOS, EDITAR_ESTACIONAMIENTOS, ELIMINAR_ESTACIONAMIENTOS,
+                VER_ZONAS, CREAR_ZONAS, EDITAR_ZONAS, ELIMINAR_ZONAS,
+                VER_PLAZAS, CREAR_PLAZAS, EDITAR_PLAZAS, ELIMINAR_PLAZAS,
+                VER_PASES, CREAR_PASES, EDITAR_PASES, ELIMINAR_PASES,
+                VER_ACCESOS, CREAR_ACCESOS, EDITAR_ACCESOS, ELIMINAR_ACCESOS);
     }
 }

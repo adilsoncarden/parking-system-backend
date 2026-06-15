@@ -1,5 +1,9 @@
 package com.condosaas.api.module.permanencia_activa.service.impl;
 
+import com.condosaas.api.exception.BusinessRuleException;
+import com.condosaas.api.module.estacionamiento.model.Estacionamiento;
+import com.condosaas.api.module.estacionamiento.model.EstadoOcupacion;
+import com.condosaas.api.module.estacionamiento.repository.EstacionamientoRepository;
 import com.condosaas.api.module.permanencia_activa.dto.*;
 import com.condosaas.api.module.permanencia_activa.model.*;
 import com.condosaas.api.module.permanencia_activa.repository.PermanenciaActivaRepository;
@@ -7,12 +11,16 @@ import com.condosaas.api.module.permanencia_activa.service.PermanenciaActivaServ
 import com.condosaas.api.module.vehiculo.model.Vehiculo;
 import com.condosaas.api.module.vehiculo.repository.VehiculoRepository;
 import com.condosaas.api.module.log_acceso_vehicular.model.LogAccesoVehicular;
+import com.condosaas.api.module.log_acceso_vehicular.model.MetodoAcceso;
+import com.condosaas.api.module.log_acceso_vehicular.model.TipoAcceso;
 import com.condosaas.api.module.log_acceso_vehicular.repository.LogAccesoVehicularRepository;
+import com.condosaas.api.security.CurrentUser;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -23,6 +31,8 @@ public class PermanenciaActivaServiceImpl implements PermanenciaActivaService {
     private final PermanenciaActivaRepository repository;
     private final VehiculoRepository vehiculoRepository;
     private final LogAccesoVehicularRepository logRepository;
+    private final EstacionamientoRepository estacionamientoRepository;
+    private final CurrentUser currentUser;
 
     @Override
     public PermanenciaActivaResponseDTO create(PermanenciaActivaRequestDTO dto) {
@@ -66,6 +76,9 @@ public class PermanenciaActivaServiceImpl implements PermanenciaActivaService {
 
         if (vehiculoId != null) {
             lista = repository.findByVehiculoId(vehiculoId);
+        } else if (currentUser.isScoped()) {
+            // Admin de condominio: solo las permanencias de SU condominio.
+            lista = repository.findByCondominioId(currentUser.condominioId());
         } else {
             lista = repository.findAll();
         }
@@ -107,6 +120,91 @@ public class PermanenciaActivaServiceImpl implements PermanenciaActivaService {
             throw new EntityNotFoundException("Permanencia no encontrada");
         }
         repository.deleteById(id);
+    }
+
+    @Override
+    public PermanenciaActivaResponseDTO registrarEntrada(RegistrarEntradaRequestDTO dto) {
+
+        Vehiculo vehiculo = vehiculoRepository.findByPlaca(dto.getPlaca())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Vehículo con placa " + dto.getPlaca() + " no encontrado"));
+
+        // Evitar doble entrada del mismo vehículo
+        repository.findFirstByVehiculoIdAndEstado(vehiculo.getId(), EstadoPermanencia.ACTIVA)
+                .ifPresent(p -> {
+                    throw new BusinessRuleException(
+                            "El vehículo " + dto.getPlaca() + " ya tiene una permanencia activa");
+                });
+
+        LocalDateTime ahora = LocalDateTime.now();
+        MetodoAcceso metodo = dto.getMetodo() != null ? dto.getMetodo() : MetodoAcceso.MANUAL;
+
+        LogAccesoVehicular logEntrada = logRepository.save(LogAccesoVehicular.builder()
+                .tipo(TipoAcceso.ENTRADA)
+                .metodo(metodo)
+                .fechaHora(ahora)
+                .observacion(dto.getObservacion())
+                .vehiculo(vehiculo)
+                .build());
+
+        PermanenciaActiva permanencia = repository.save(PermanenciaActiva.builder()
+                .fechaEntrada(ahora)
+                .estado(EstadoPermanencia.ACTIVA)
+                .vehiculo(vehiculo)
+                .logEntrada(logEntrada)
+                .build());
+
+        // Ocupar la plaza indicada (si vino)
+        if (dto.getEstacionamientoId() != null) {
+            Estacionamiento plaza = estacionamientoRepository.findById(dto.getEstacionamientoId())
+                    .orElseThrow(() -> new EntityNotFoundException("Estacionamiento no encontrado"));
+            if (plaza.getEstadoOcupacion() == EstadoOcupacion.OCUPADO) {
+                throw new BusinessRuleException("La plaza " + plaza.getCodigo() + " ya está ocupada");
+            }
+            plaza.setEstadoOcupacion(EstadoOcupacion.OCUPADO);
+            plaza.setVehiculoActual(vehiculo);
+            estacionamientoRepository.save(plaza);
+        }
+
+        return mapToDTO(permanencia);
+    }
+
+    @Override
+    public PermanenciaActivaResponseDTO registrarSalida(RegistrarSalidaRequestDTO dto) {
+
+        Vehiculo vehiculo = vehiculoRepository.findByPlaca(dto.getPlaca())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Vehículo con placa " + dto.getPlaca() + " no encontrado"));
+
+        PermanenciaActiva permanencia = repository
+                .findFirstByVehiculoIdAndEstado(vehiculo.getId(), EstadoPermanencia.ACTIVA)
+                .orElseThrow(() -> new BusinessRuleException(
+                        "El vehículo " + dto.getPlaca() + " no tiene una permanencia activa"));
+
+        LocalDateTime ahora = LocalDateTime.now();
+        MetodoAcceso metodo = dto.getMetodo() != null ? dto.getMetodo() : MetodoAcceso.MANUAL;
+
+        LogAccesoVehicular logSalida = logRepository.save(LogAccesoVehicular.builder()
+                .tipo(TipoAcceso.SALIDA)
+                .metodo(metodo)
+                .fechaHora(ahora)
+                .observacion(dto.getObservacion())
+                .vehiculo(vehiculo)
+                .build());
+
+        permanencia.setFechaSalida(ahora);
+        permanencia.setEstado(EstadoPermanencia.FINALIZADA);
+        permanencia.setLogSalida(logSalida);
+        repository.save(permanencia);
+
+        // Liberar la plaza que ocupaba (si alguna)
+        estacionamientoRepository.findByVehiculoActualId(vehiculo.getId()).ifPresent(plaza -> {
+            plaza.setEstadoOcupacion(EstadoOcupacion.LIBRE);
+            plaza.setVehiculoActual(null);
+            estacionamientoRepository.save(plaza);
+        });
+
+        return mapToDTO(permanencia);
     }
 
     private PermanenciaActivaResponseDTO mapToDTO(PermanenciaActiva entity) {
