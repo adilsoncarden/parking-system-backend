@@ -15,4 +15,9 @@ public interface PermanenciaActivaService {
     PermanenciaActivaResponseDTO update(Long id, PermanenciaActivaRequestDTO dto);
 
     void delete(Long id);
+
+    // Flujos de negocio (transaccionales)
+    PermanenciaActivaResponseDTO registrarEntrada(RegistrarEntradaRequestDTO dto);
+
+    PermanenciaActivaResponseDTO registrarSalida(RegistrarSalidaRequestDTO dto);
 }

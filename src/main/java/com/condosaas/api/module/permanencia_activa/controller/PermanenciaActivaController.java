@@ -2,6 +2,7 @@ package com.condosaas.api.module.permanencia_activa.controller;
 
 import com.condosaas.api.module.permanencia_activa.dto.*;
 import com.condosaas.api.module.permanencia_activa.service.PermanenciaActivaService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,20 @@ public class PermanenciaActivaController {
     @PostMapping("/create")
     public ResponseEntity<PermanenciaActivaResponseDTO> create(@RequestBody PermanenciaActivaRequestDTO dto) {
         return ResponseEntity.ok(service.create(dto));
+    }
+
+    // Flujo de negocio: registra el ingreso de un vehículo (crea log ENTRADA + permanencia + ocupa plaza).
+    @PostMapping("/registrar-entrada")
+    public ResponseEntity<PermanenciaActivaResponseDTO> registrarEntrada(
+            @Valid @RequestBody RegistrarEntradaRequestDTO dto) {
+        return ResponseEntity.ok(service.registrarEntrada(dto));
+    }
+
+    // Flujo de negocio: registra la salida (crea log SALIDA + finaliza permanencia + libera plaza).
+    @PostMapping("/registrar-salida")
+    public ResponseEntity<PermanenciaActivaResponseDTO> registrarSalida(
+            @Valid @RequestBody RegistrarSalidaRequestDTO dto) {
+        return ResponseEntity.ok(service.registrarSalida(dto));
     }
 
     @GetMapping("")

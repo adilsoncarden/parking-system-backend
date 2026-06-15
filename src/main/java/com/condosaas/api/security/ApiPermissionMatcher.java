@@ -14,6 +14,7 @@ public class ApiPermissionMatcher {
     }
 
     private static final Rule[] RULES = {
+            rule("GET", "/api/dashboard/parking", PermisoCatalog.VER_PARKING),
             rule("GET", "/api/dashboard(/.*)?", PermisoCatalog.VER_DASHBOARD),
 
             rule("GET", "/api/condominios(/.*)?", PermisoCatalog.VER_CONDOMINIOS),
@@ -69,6 +70,46 @@ public class ApiPermissionMatcher {
             rule("POST", "/api/permisos/create", PermisoCatalog.GESTIONAR_PERMISOS),
             rule("PUT", "/api/permisos/\\d+/update", PermisoCatalog.GESTIONAR_PERMISOS),
             rule("DELETE", "/api/permisos/\\d+/delete", PermisoCatalog.GESTIONAR_PERMISOS),
+
+            // ── Parking (ParkControl) ─────────────────────────────────────
+            rule("GET", "/api/vehiculos(/.*)?", PermisoCatalog.VER_VEHICULOS),
+            rule("POST", "/api/vehiculos/create", PermisoCatalog.CREAR_VEHICULOS),
+            rule("PUT", "/api/vehiculos/\\d+/update", PermisoCatalog.EDITAR_VEHICULOS),
+            rule("DELETE", "/api/vehiculos/\\d+/delete", PermisoCatalog.ELIMINAR_VEHICULOS),
+
+            rule("GET", "/api/estacionamiento(/.*)?", PermisoCatalog.VER_ESTACIONAMIENTOS),
+            rule("POST", "/api/estacionamiento/create", PermisoCatalog.CREAR_ESTACIONAMIENTOS),
+            rule("PUT", "/api/estacionamiento/\\d+/update", PermisoCatalog.EDITAR_ESTACIONAMIENTOS),
+            rule("DELETE", "/api/estacionamiento/\\d+/delete", PermisoCatalog.ELIMINAR_ESTACIONAMIENTOS),
+
+            rule("GET", "/api/zonas-estacionamiento(/.*)?", PermisoCatalog.VER_ZONAS),
+            rule("POST", "/api/zonas-estacionamiento/create", PermisoCatalog.CREAR_ZONAS),
+            rule("PUT", "/api/zonas-estacionamiento/\\d+/update", PermisoCatalog.EDITAR_ZONAS),
+            rule("DELETE", "/api/zonas-estacionamiento/\\d+/delete", PermisoCatalog.ELIMINAR_ZONAS),
+
+            rule("GET", "/api/detalles-plaza(/.*)?", PermisoCatalog.VER_PLAZAS),
+            rule("POST", "/api/detalles-plaza/create", PermisoCatalog.CREAR_PLAZAS),
+            rule("PUT", "/api/detalles-plaza/\\d+/update", PermisoCatalog.EDITAR_PLAZAS),
+            rule("DELETE", "/api/detalles-plaza/\\d+/delete", PermisoCatalog.ELIMINAR_PLAZAS),
+
+            rule("GET", "/api/pases-invitado(/.*)?", PermisoCatalog.VER_PASES),
+            rule("POST", "/api/pases-invitado/create", PermisoCatalog.CREAR_PASES),
+            rule("PUT", "/api/pases-invitado/\\d+/update", PermisoCatalog.EDITAR_PASES),
+            rule("DELETE", "/api/pases-invitado/\\d+/delete", PermisoCatalog.ELIMINAR_PASES),
+
+            rule("POST", "/api/permanencias/registrar-entrada", PermisoCatalog.CREAR_ACCESOS),
+            rule("POST", "/api/permanencias/registrar-salida", PermisoCatalog.EDITAR_ACCESOS),
+            rule("GET", "/api/permanencias(/.*)?", PermisoCatalog.VER_ACCESOS),
+            rule("POST", "/api/permanencias/create", PermisoCatalog.CREAR_ACCESOS),
+            rule("PUT", "/api/permanencias/\\d+/update", PermisoCatalog.EDITAR_ACCESOS),
+            rule("DELETE", "/api/permanencias/\\d+/delete", PermisoCatalog.ELIMINAR_ACCESOS),
+
+            rule("GET", "/api/logs-acceso-vehicular(/.*)?", PermisoCatalog.VER_ACCESOS),
+            rule("POST", "/api/logs-acceso-vehicular/create", PermisoCatalog.CREAR_ACCESOS),
+            rule("DELETE", "/api/logs-acceso-vehicular/\\d+/delete", PermisoCatalog.ELIMINAR_ACCESOS),
+
+            // Utilidad de poblamiento (solo admin / gestores)
+            rule("POST", "/api/seed/.*", PermisoCatalog.GESTIONAR_PERMISOS),
     };
 
     private static Rule rule(String method, String regex, String permission) {

@@ -16,4 +16,9 @@ public class EstacionamientoResponseDTO {
     private String zonaNombre;
 
     private Long condominioId;
+    private String condominioNombre;
+
+    // Ocupación actual (null si la plaza está libre)
+    private Long vehiculoActualId;
+    private String placaActual;
 }
