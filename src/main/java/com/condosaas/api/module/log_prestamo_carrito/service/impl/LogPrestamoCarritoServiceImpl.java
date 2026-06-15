@@ -71,7 +71,10 @@ public class LogPrestamoCarritoServiceImpl implements LogPrestamoCarritoService 
             throw new BusinessRuleException("El carrito ya tiene un préstamo activo");
         }
 
-        Entrada entradaSalida = resolveEntrada(dto.getEntradaSalidaId(), carrito);
+        // El carrito sale por su entrada fija (si la tiene); si no, por la indicada en el DTO.
+        Entrada entradaSalida = carrito.getEntrada() != null
+                ? carrito.getEntrada()
+                : resolveEntrada(dto.getEntradaSalidaId(), carrito);
 
         LocalDateTime now = LocalDateTime.now();
         int limite = penalizacionProperties.getTiempoLimiteMinutos();
@@ -165,7 +168,18 @@ public class LogPrestamoCarritoServiceImpl implements LogPrestamoCarritoService 
         }
         currentUser.assertCondominio(entity.getCarrito().getCondominio().getId());
 
-        entity.setEntradaDevolucion(resolveEntrada(entradaDevolucionId, entity.getCarrito()));
+        // Regla: el carrito se devuelve por la MISMA entrada por la que salió.
+        Entrada entradaSalida = entity.getEntradaSalida();
+        if (entradaSalida != null) {
+            Entrada entradaDev = resolveEntrada(entradaDevolucionId, entity.getCarrito());
+            if (entradaDev != null && !entradaDev.getId().equals(entradaSalida.getId())) {
+                throw new BusinessRuleException(
+                        "El carrito debe devolverse por la entrada \"" + entradaSalida.getNombre() + "\"");
+            }
+            entity.setEntradaDevolucion(entradaSalida);
+        } else {
+            entity.setEntradaDevolucion(resolveEntrada(entradaDevolucionId, entity.getCarrito()));
+        }
 
         LocalDateTime fin = LocalDateTime.now();
         long minutosUsados = Math.max(0, Duration.between(entity.getFechaInicio(), fin).toMinutes());

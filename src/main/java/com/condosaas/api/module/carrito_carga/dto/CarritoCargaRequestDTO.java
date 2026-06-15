@@ -18,4 +18,7 @@ public class CarritoCargaRequestDTO {
 
     @NotNull
     private Long condominioId;
+
+    // Entrada (puerta) a la que queda fijo el carrito. Requerida al crear.
+    private Long entradaId;
 }

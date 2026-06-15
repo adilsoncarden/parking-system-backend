@@ -7,6 +7,7 @@ import com.condosaas.api.module.entrada.dto.*;
 import com.condosaas.api.module.entrada.model.Entrada;
 import com.condosaas.api.module.entrada.repository.EntradaRepository;
 import com.condosaas.api.module.entrada.service.EntradaService;
+import com.condosaas.api.config.CondominioProperties;
 import com.condosaas.api.security.CurrentUser;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +21,11 @@ import java.util.List;
 @Transactional
 public class EntradaServiceImpl implements EntradaService {
 
-    // Un condominio puede tener como máximo 2 entradas.
-    private static final long MAX_ENTRADAS_POR_CONDOMINIO = 2;
-
     private final EntradaRepository repository;
     private final CondominioRepository condominioRepository;
     private final CurrentUser currentUser;
+    // Máximo de entradas (puertas) por condominio, configurable (app.condominio.max-entradas, def. 2).
+    private final CondominioProperties condominioProperties;
 
     @Override
     public EntradaResponseDTO create(EntradaRequestDTO dto) {
@@ -34,8 +34,9 @@ public class EntradaServiceImpl implements EntradaService {
         Condominio condominio = condominioRepository.findById(dto.getCondominioId())
                 .orElseThrow(() -> new EntityNotFoundException("Condominio no encontrado"));
 
-        if (repository.countByCondominioId(condominio.getId()) >= MAX_ENTRADAS_POR_CONDOMINIO) {
-            throw new BusinessRuleException("Un condominio puede tener máximo 2 entradas.");
+        if (repository.countByCondominioId(condominio.getId()) >= condominioProperties.getMaxEntradas()) {
+            throw new BusinessRuleException(
+                    "Un condominio puede tener máximo " + condominioProperties.getMaxEntradas() + " entradas.");
         }
 
         Entrada entity = Entrada.builder()
@@ -82,8 +83,9 @@ public class EntradaServiceImpl implements EntradaService {
         // Si se cambia de condominio, validar el límite en el destino.
         boolean cambiaCondominio = !entity.getCondominio().getId().equals(condominio.getId());
         if (cambiaCondominio
-                && repository.countByCondominioId(condominio.getId()) >= MAX_ENTRADAS_POR_CONDOMINIO) {
-            throw new BusinessRuleException("Un condominio puede tener máximo 2 entradas.");
+                && repository.countByCondominioId(condominio.getId()) >= condominioProperties.getMaxEntradas()) {
+            throw new BusinessRuleException(
+                    "Un condominio puede tener máximo " + condominioProperties.getMaxEntradas() + " entradas.");
         }
 
         entity.setNombre(dto.getNombre());

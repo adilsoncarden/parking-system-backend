@@ -14,4 +14,7 @@ public interface CarritoCargaRepository extends JpaRepository<CarritoCarga, Long
     List<CarritoCarga> findByCondominioId(Long condominioId);
 
     long countByEstado(EstadoCarrito estado);
+
+    // Cuántos carritos están fijos a una entrada (para validar la capacidad de la puerta).
+    long countByEntradaId(Long entradaId);
 }

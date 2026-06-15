@@ -1,6 +1,7 @@
 package com.condosaas.api.module.carrito_carga.model;
 
 import com.condosaas.api.module.condominio.model.Condominio;
+import com.condosaas.api.module.entrada.model.Entrada;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,4 +32,10 @@ public class CarritoCarga {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_condominio", nullable = false)
     private Condominio condominio;
+
+    // Entrada (puerta) a la que está fijo el carrito. No se cambia de entrada:
+    // se saca y se devuelve siempre por la misma. Nullable por compatibilidad con datos previos.
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_entrada")
+    private Entrada entrada;
 }

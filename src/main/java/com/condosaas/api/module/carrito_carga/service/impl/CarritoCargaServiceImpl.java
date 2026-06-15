@@ -6,6 +6,9 @@ import com.condosaas.api.module.carrito_carga.repository.CarritoCargaRepository;
 import com.condosaas.api.module.carrito_carga.service.CarritoCargaService;
 import com.condosaas.api.module.condominio.model.Condominio;
 import com.condosaas.api.module.condominio.repository.CondominioRepository;
+import com.condosaas.api.module.entrada.model.Entrada;
+import com.condosaas.api.module.entrada.repository.EntradaRepository;
+import com.condosaas.api.exception.BusinessRuleException;
 import com.condosaas.api.security.CurrentUser;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,7 @@ public class CarritoCargaServiceImpl implements CarritoCargaService {
 
     private final CarritoCargaRepository repository;
     private final CondominioRepository condominioRepository;
+    private final EntradaRepository entradaRepository;
     private final CurrentUser currentUser;
 
     @Override
@@ -30,11 +34,28 @@ public class CarritoCargaServiceImpl implements CarritoCargaService {
         Condominio condominio = condominioRepository.findById(dto.getCondominioId())
                 .orElseThrow(() -> new EntityNotFoundException("Condominio no encontrado"));
 
+        // El carrito queda fijo a una entrada (puerta). Se valida la capacidad de esa puerta.
+        if (dto.getEntradaId() == null) {
+            throw new BusinessRuleException("Debes asignar una entrada (puerta) al carrito");
+        }
+        Entrada entrada = entradaRepository.findById(dto.getEntradaId())
+                .orElseThrow(() -> new EntityNotFoundException("Entrada no encontrada"));
+        if (!entrada.getCondominio().getId().equals(condominio.getId())) {
+            throw new BusinessRuleException("La entrada no pertenece al condominio del carrito");
+        }
+        if (entrada.getCapacidadCarritos() != null
+                && repository.countByEntradaId(entrada.getId()) >= entrada.getCapacidadCarritos()) {
+            throw new BusinessRuleException(
+                    "La entrada \"" + entrada.getNombre() + "\" ya alcanzó su capacidad de "
+                            + entrada.getCapacidadCarritos() + " carritos");
+        }
+
         CarritoCarga entity = CarritoCarga.builder()
                 .codigo(dto.getCodigo())
                 .descripcion(dto.getDescripcion())
                 .estado(dto.getEstado())
                 .condominio(condominio)
+                .entrada(entrada)
                 .build();
 
         return mapToDTO(repository.save(entity));
@@ -96,6 +117,8 @@ public class CarritoCargaServiceImpl implements CarritoCargaService {
                 .estado(entity.getEstado())
                 .condominioId(entity.getCondominio().getId())
                 .condominioNombre(entity.getCondominio().getNombre())
+                .entradaId(entity.getEntrada() != null ? entity.getEntrada().getId() : null)
+                .entradaNombre(entity.getEntrada() != null ? entity.getEntrada().getNombre() : null)
                 .build();
     }
 }
