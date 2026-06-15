@@ -10,6 +10,8 @@ import com.condosaas.api.module.apartamento.model.Apartamento;
 import com.condosaas.api.module.apartamento.repository.ApartamentoRepository;
 import com.condosaas.api.module.condominio.model.Condominio;
 import com.condosaas.api.module.condominio.repository.CondominioRepository;
+import com.condosaas.api.module.entrada.model.Entrada;
+import com.condosaas.api.module.entrada.repository.EntradaRepository;
 import com.condosaas.api.security.CurrentUser;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final RolRepository rolRepository;
     private final ApartamentoRepository apartamentoRepository;
     private final CondominioRepository condominioRepository;
+    private final EntradaRepository entradaRepository;
     private final CurrentUser currentUser;
     private final PasswordEncoder passwordEncoder;
 
@@ -37,6 +40,15 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
         return condominioRepository.findById(condominioId)
                 .orElseThrow(() -> new EntityNotFoundException("Condominio no encontrado"));
+    }
+
+    // Entrada que cubre un portero (opcional). Null para roles que no son portero.
+    private Entrada resolveEntrada(Long entradaId) {
+        if (entradaId == null) {
+            return null;
+        }
+        return entradaRepository.findById(entradaId)
+                .orElseThrow(() -> new EntityNotFoundException("Entrada no encontrada"));
     }
 
     // Condominio efectivo de un usuario: el asignado directo, o el de su apartamento.
@@ -77,6 +89,8 @@ public class UsuarioServiceImpl implements UsuarioService {
                 .rol(rol)
                 .apartamento(apartamento)
                 .condominio(resolveCondominio(dto.getCondominioId()))
+                .entrada(resolveEntrada(dto.getEntradaId()))
+                .turno(dto.getTurno())
                 .build();
 
         return mapToDTO(repository.save(entity));
@@ -142,6 +156,8 @@ public class UsuarioServiceImpl implements UsuarioService {
         entity.setRol(rol);
         entity.setApartamento(apartamento);
         entity.setCondominio(resolveCondominio(dto.getCondominioId()));
+        entity.setEntrada(resolveEntrada(dto.getEntradaId()));
+        entity.setTurno(dto.getTurno());
 
         return mapToDTO(repository.save(entity));
     }
@@ -176,8 +192,12 @@ public class UsuarioServiceImpl implements UsuarioService {
                 .rolId(entity.getRol().getId())
                 .rolNombre(entity.getRol().getNombre())
                 .apartamentoId(entity.getApartamento() != null ? entity.getApartamento().getId() : null)
+                .unidad(entity.getApartamento() != null ? entity.getApartamento().getNumero() : null)
                 .condominioId(entity.getCondominio() != null ? entity.getCondominio().getId() : null)
                 .condominioNombre(entity.getCondominio() != null ? entity.getCondominio().getNombre() : null)
+                .entradaId(entity.getEntrada() != null ? entity.getEntrada().getId() : null)
+                .entradaNombre(entity.getEntrada() != null ? entity.getEntrada().getNombre() : null)
+                .turno(entity.getTurno())
                 .build();
     }
 }

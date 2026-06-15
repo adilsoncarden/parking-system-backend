@@ -3,6 +3,7 @@ package com.condosaas.api.module.usuario.model;
 import com.condosaas.api.module.rol.model.Rol;
 import com.condosaas.api.module.apartamento.model.Apartamento;
 import com.condosaas.api.module.condominio.model.Condominio;
+import com.condosaas.api.module.entrada.model.Entrada;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -55,4 +56,13 @@ public class Usuario {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_condominio")
     private Condominio condominio;
+
+    // Solo para porteros: entrada (puerta) que cubren y turno (día/noche). Null en otros roles.
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_entrada")
+    private Entrada entrada;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "turno")
+    private Turno turno;
 }

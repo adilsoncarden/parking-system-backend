@@ -36,4 +36,8 @@ public class UsuarioRequestDTO {
 
     // Condominio asignado (para admins de condominio). Opcional.
     private Long condominioId;
+
+    // Solo para porteros: entrada (puerta) que cubren y turno (DIA/NOCHE).
+    private Long entradaId;
+    private Turno turno;
 }
