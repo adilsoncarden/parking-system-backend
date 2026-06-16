@@ -27,6 +27,7 @@ target/
 *.iml
 *.ipr
 .vscode/
+.env
 bin/
 
 # --- CONFIGURATION & SECURITY ---
