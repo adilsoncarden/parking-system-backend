@@ -10,7 +10,7 @@ public interface UsuarioService {
 
     UsuarioResponseDTO getById(Long id);
 
-    List<UsuarioResponseDTO> getAll(Long rolId, Long apartamentoId);
+    List<UsuarioResponseDTO> getAll(Long rolId, Long apartamentoId, Long condominioId);
 
     UsuarioResponseDTO update(Long id, UsuarioRequestDTO dto);
 

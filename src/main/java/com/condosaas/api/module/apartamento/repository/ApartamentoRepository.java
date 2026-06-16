@@ -38,4 +38,13 @@ public interface ApartamentoRepository extends JpaRepository<Apartamento, Long> 
             WHERE a.id = :id
             """)
     Optional<Apartamento> findByIdWithRelations(@Param("id") Long id);
+
+    @Query("""
+            SELECT a FROM Apartamento a
+            JOIN FETCH a.piso p
+            JOIN FETCH p.torre t
+            JOIN FETCH t.condominio c
+            WHERE c.id = :condominioId
+            """)
+    List<Apartamento> findByCondominioIdWithRelations(@Param("condominioId") Long condominioId);
 }

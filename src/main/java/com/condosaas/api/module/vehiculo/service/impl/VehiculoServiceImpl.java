@@ -6,6 +6,7 @@ import com.condosaas.api.module.vehiculo.repository.VehiculoRepository;
 import com.condosaas.api.module.vehiculo.service.VehiculoService;
 import com.condosaas.api.module.usuario.model.Usuario;
 import com.condosaas.api.module.usuario.repository.UsuarioRepository;
+import com.condosaas.api.security.CurrentUser;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ public class VehiculoServiceImpl implements VehiculoService {
 
     private final VehiculoRepository repository;
     private final UsuarioRepository usuarioRepository;
+    private final CurrentUser currentUser;
 
     @Override
     public VehiculoResponseDTO create(VehiculoRequestDTO dto) {
@@ -48,14 +50,25 @@ public class VehiculoServiceImpl implements VehiculoService {
     }
 
     @Override
+    public VehiculoResponseDTO getByPlaca(String placa) {
+        Vehiculo entity = repository.findByPlaca(placa)
+                .orElseThrow(() -> new EntityNotFoundException("Vehículo con placa " + placa + " no encontrado"));
+
+        return mapToDTO(entity);
+    }
+
+    @Override
     public List<VehiculoResponseDTO> getAll(Long usuarioId) {
 
         List<Vehiculo> lista;
 
         if (usuarioId != null) {
             lista = repository.findByUsuarioId(usuarioId);
+        } else if (currentUser.isScoped()) {
+            // Admin de condominio: solo los vehículos de SU condominio.
+            lista = repository.findByCondominioIdWithUsuario(currentUser.condominioId());
         } else {
-            lista = repository.findAll();
+            lista = repository.findAllWithUsuario();
         }
 
         return lista.stream().map(this::mapToDTO).toList();
@@ -89,6 +102,12 @@ public class VehiculoServiceImpl implements VehiculoService {
     }
 
     private VehiculoResponseDTO mapToDTO(Vehiculo entity) {
+        var usuario = entity.getUsuario();
+        var apartamento = usuario.getApartamento();
+        var piso = apartamento != null ? apartamento.getPiso() : null;
+        var torre = piso != null ? piso.getTorre() : null;
+        var condominio = torre != null ? torre.getCondominio() : null;
+
         return VehiculoResponseDTO.builder()
                 .id(entity.getId())
                 .placa(entity.getPlaca())
@@ -96,8 +115,14 @@ public class VehiculoServiceImpl implements VehiculoService {
                 .modelo(entity.getModelo())
                 .color(entity.getColor())
                 .estado(entity.getEstado())
-                .usuarioId(entity.getUsuario().getId())
-                .usuarioNombre(entity.getUsuario().getNombres() + " " + entity.getUsuario().getApellidos())
+                .usuarioId(usuario.getId())
+                .usuarioNombre(usuario.getNombres() + " " + usuario.getApellidos())
+                .apartamentoId(apartamento != null ? apartamento.getId() : null)
+                .unidad(apartamento != null ? apartamento.getNumero() : null)
+                .tipoOcupante(usuario.getTipoOcupante() != null ? usuario.getTipoOcupante().name() : null)
+                .pisoNumero(piso != null ? piso.getNumero() : null)
+                .torreNombre(torre != null ? torre.getNombre() : null)
+                .condominioNombre(condominio != null ? condominio.getNombre() : null)
                 .build();
     }
 }

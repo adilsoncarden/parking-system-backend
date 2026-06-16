@@ -14,7 +14,7 @@ public interface LogPrestamoCarritoService {
 
     LogPrestamoCarritoResponseDTO update(Long id, LogPrestamoCarritoRequestDTO dto);
 
-    LogPrestamoCarritoResponseDTO registrarDevolucion(Long id);
+    LogPrestamoCarritoResponseDTO registrarDevolucion(Long id, Long entradaDevolucionId);
 
     LogPrestamoCarritoResponseDTO marcarPagado(Long id);
 

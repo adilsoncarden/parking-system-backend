@@ -9,7 +9,6 @@ import com.condosaas.api.module.permiso.service.PermisoService;
 import com.condosaas.api.module.permiso.service.PermissionAuthorizationService;
 import com.condosaas.api.module.rol.model.Rol;
 import com.condosaas.api.module.rol.repository.RolRepository;
-import com.condosaas.api.security.PermisoCatalog;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -92,7 +91,10 @@ public class PermisoServiceImpl implements PermisoService {
             throw new IllegalArgumentException("El rol ADMIN tiene todos los permisos automáticamente");
         }
 
+        // flush() obliga a ejecutar el DELETE antes de los INSERT siguientes; sin esto,
+        // Hibernate ordena los INSERT primero y choca con la constraint única (id_rol,id_permiso).
         rolPermisoRepository.deleteByRolId(rolId);
+        rolPermisoRepository.flush();
 
         List<Long> permisoIds = dto.getPermisoIds() != null ? dto.getPermisoIds() : List.of();
         List<RolPermiso> nuevos = new ArrayList<>();

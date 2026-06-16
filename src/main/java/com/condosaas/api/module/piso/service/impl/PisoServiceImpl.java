@@ -6,6 +6,7 @@ import com.condosaas.api.module.piso.repository.PisoRepository;
 import com.condosaas.api.module.piso.service.PisoService;
 import com.condosaas.api.module.torre.model.Torre;
 import com.condosaas.api.module.torre.repository.TorreRepository;
+import com.condosaas.api.security.CurrentUser;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,12 +21,14 @@ public class PisoServiceImpl implements PisoService {
 
     private final PisoRepository repository;
     private final TorreRepository torreRepository;
+    private final CurrentUser currentUser;
 
     @Override
     public PisoResponseDTO create(PisoRequestDTO dto) {
 
         Torre torre = torreRepository.findById(dto.getTorreId())
                 .orElseThrow(() -> new EntityNotFoundException("Torre no encontrada"));
+        currentUser.assertCondominio(torre.getCondominio().getId());
 
         Piso entity = Piso.builder()
                 .numero(dto.getNumero())
@@ -39,6 +42,7 @@ public class PisoServiceImpl implements PisoService {
     public PisoResponseDTO getById(Long id) {
         Piso entity = repository.findByIdWithRelations(id)
                 .orElseThrow(() -> new EntityNotFoundException("Piso no encontrado"));
+        currentUser.assertCondominio(entity.getTorre().getCondominio().getId());
 
         return mapToDTO(entity);
     }
@@ -47,8 +51,9 @@ public class PisoServiceImpl implements PisoService {
     public List<PisoResponseDTO> getAll(Long torreId) {
 
         List<Piso> lista;
-
-        if (torreId != null) {
+        if (currentUser.isScoped()) {
+            lista = repository.findByCondominioIdWithRelations(currentUser.condominioId());
+        } else if (torreId != null) {
             lista = repository.findByTorreIdWithRelations(torreId);
         } else {
             lista = repository.findAllWithRelations();
@@ -62,9 +67,11 @@ public class PisoServiceImpl implements PisoService {
 
         Piso entity = repository.findByIdWithRelations(id)
                 .orElseThrow(() -> new EntityNotFoundException("Piso no encontrado"));
+        currentUser.assertCondominio(entity.getTorre().getCondominio().getId());
 
         Torre torre = torreRepository.findById(dto.getTorreId())
                 .orElseThrow(() -> new EntityNotFoundException("Torre no encontrada"));
+        currentUser.assertCondominio(torre.getCondominio().getId());
 
         entity.setNumero(dto.getNumero());
         entity.setTorre(torre);
@@ -74,10 +81,10 @@ public class PisoServiceImpl implements PisoService {
 
     @Override
     public void delete(Long id) {
-        if (!repository.existsById(id)) {
-            throw new EntityNotFoundException("Piso no encontrado");
-        }
-        repository.deleteById(id);
+        Piso entity = repository.findByIdWithRelations(id)
+                .orElseThrow(() -> new EntityNotFoundException("Piso no encontrado"));
+        currentUser.assertCondominio(entity.getTorre().getCondominio().getId());
+        repository.delete(entity);
     }
 
     private PisoResponseDTO mapToDTO(Piso entity) {

@@ -21,4 +21,13 @@ public class UsuarioResponseDTO {
     private String rolNombre;
 
     private Long apartamentoId;
+    private String unidad;        // número del apartamento del usuario
+
+    private Long condominioId;
+    private String condominioNombre;
+
+    // Solo para porteros: entrada (puerta) que cubren y turno (DIA/NOCHE).
+    private Long entradaId;
+    private String entradaNombre;
+    private Turno turno;
 }

@@ -6,6 +6,7 @@ import com.condosaas.api.module.estacionamiento.repository.EstacionamientoReposi
 import com.condosaas.api.module.estacionamiento.service.EstacionamientoService;
 import com.condosaas.api.module.zona_estacionamiento.model.ZonaEstacionamiento;
 import com.condosaas.api.module.zona_estacionamiento.repository.ZonaEstacionamientoRepository;
+import com.condosaas.api.security.CurrentUser;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ public class EstacionamientoServiceImpl implements EstacionamientoService {
 
     private final EstacionamientoRepository repository;
     private final ZonaEstacionamientoRepository zonaRepository;
+    private final CurrentUser currentUser;
 
     @Override
     public EstacionamientoResponseDTO create(EstacionamientoRequestDTO dto) {
@@ -51,6 +53,9 @@ public class EstacionamientoServiceImpl implements EstacionamientoService {
 
         if (zonaId != null) {
             lista = repository.findByZonaId(zonaId);
+        } else if (currentUser.isScoped()) {
+            // Admin de condominio: solo el mapa de SU condominio.
+            lista = repository.findByZona_Condominio_Id(currentUser.condominioId());
         } else {
             lista = repository.findAll();
         }
@@ -90,6 +95,9 @@ public class EstacionamientoServiceImpl implements EstacionamientoService {
                 .zonaEstacionamientoId(entity.getZona().getId())
                 .zonaNombre(entity.getZona().getNombre())
                 .condominioId(entity.getZona().getCondominio().getId())
+                .condominioNombre(entity.getZona().getCondominio().getNombre())
+                .vehiculoActualId(entity.getVehiculoActual() != null ? entity.getVehiculoActual().getId() : null)
+                .placaActual(entity.getVehiculoActual() != null ? entity.getVehiculoActual().getPlaca() : null)
                 .build();
     }
 }

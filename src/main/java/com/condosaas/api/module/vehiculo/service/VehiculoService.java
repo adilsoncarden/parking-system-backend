@@ -10,6 +10,8 @@ public interface VehiculoService {
 
     VehiculoResponseDTO getById(Long id);
 
+    VehiculoResponseDTO getByPlaca(String placa);
+
     List<VehiculoResponseDTO> getAll(Long usuarioId);
 
     VehiculoResponseDTO update(Long id, VehiculoRequestDTO dto);

@@ -19,7 +19,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.condosaas.api.module.dashboard.dto.DashboardParkingDTO;
+import com.condosaas.api.module.estacionamiento.model.EstadoOcupacion;
+import com.condosaas.api.module.estacionamiento.repository.EstacionamientoRepository;
+import com.condosaas.api.module.log_acceso_vehicular.repository.LogAccesoVehicularRepository;
+import com.condosaas.api.module.permanencia_activa.model.EstadoPermanencia;
+import com.condosaas.api.module.permanencia_activa.repository.PermanenciaActivaRepository;
+import com.condosaas.api.module.vehiculo.repository.VehiculoRepository;
+
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Slf4j
 @RestController
@@ -33,6 +42,10 @@ public class DashboardController {
     private final ApartamentoRepository apartamentoRepository;
     private final CarritoCargaRepository carritoCargaRepository;
     private final LogPrestamoCarritoRepository prestamoCarritoRepository;
+    private final EstacionamientoRepository estacionamientoRepository;
+    private final VehiculoRepository vehiculoRepository;
+    private final PermanenciaActivaRepository permanenciaActivaRepository;
+    private final LogAccesoVehicularRepository logAccesoVehicularRepository;
 
     @GetMapping("/stats")
     public ResponseEntity<DashboardStatsDTO> getStats() {
@@ -55,6 +68,31 @@ public class DashboardController {
                 .apartamentosOcupados(ocupados)
                 .apartamentosMantenimiento(mantenimiento)
                 .apartamentosInactivos(inactivos)
+                .build());
+    }
+
+    @GetMapping("/parking")
+    public ResponseEntity<DashboardParkingDTO> getParkingStats() {
+        long totalPlazas = estacionamientoRepository.count();
+        long libres = estacionamientoRepository.countByEstadoOcupacion(EstadoOcupacion.LIBRE);
+        long ocupadas = estacionamientoRepository.countByEstadoOcupacion(EstadoOcupacion.OCUPADO);
+        long reservadas = estacionamientoRepository.countByEstadoOcupacion(EstadoOcupacion.RESERVADO);
+        long inactivas = estacionamientoRepository.countByEstadoOcupacion(EstadoOcupacion.INACTIVO);
+
+        long totalVehiculos = vehiculoRepository.count();
+        long permanenciasActivas = permanenciaActivaRepository.countByEstado(EstadoPermanencia.ACTIVA);
+        long accesosHoy = logAccesoVehicularRepository
+                .countByFechaHoraGreaterThanEqual(LocalDate.now().atStartOfDay());
+
+        return ResponseEntity.ok(DashboardParkingDTO.builder()
+                .totalPlazas(totalPlazas)
+                .plazasLibres(libres)
+                .plazasOcupadas(ocupadas)
+                .plazasReservadas(reservadas)
+                .plazasInactivas(inactivas)
+                .totalVehiculos(totalVehiculos)
+                .permanenciasActivas(permanenciasActivas)
+                .accesosHoy(accesosHoy)
                 .build());
     }
 

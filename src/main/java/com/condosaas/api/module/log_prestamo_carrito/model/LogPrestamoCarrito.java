@@ -1,6 +1,7 @@
 package com.condosaas.api.module.log_prestamo_carrito.model;
 
 import com.condosaas.api.module.carrito_carga.model.CarritoCarga;
+import com.condosaas.api.module.entrada.model.Entrada;
 import com.condosaas.api.module.usuario.model.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
@@ -43,9 +44,11 @@ public class LogPrestamoCarrito {
     @Column(name = "monto_penalizacion", precision = 12, scale = 2)
     private BigDecimal montoPenalizacion;
 
+    @Builder.Default
     @Column(name = "penalizado", columnDefinition = "boolean default false")
     private Boolean penalizado = false;
 
+    @Builder.Default
     @Column(name = "pagado", columnDefinition = "boolean default true")
     private Boolean pagado = true;
 
@@ -60,4 +63,13 @@ public class LogPrestamoCarrito {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
+
+    // Por cuál entrada salió el carrito y por cuál se devolvió (puede ser distinta).
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_entrada_salida")
+    private Entrada entradaSalida;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_entrada_devolucion")
+    private Entrada entradaDevolucion;
 }
