@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Controlador de autenticación.
+ * Expone el endpoint de login y gestiona la generación del token JWT.
+ */
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -25,6 +29,18 @@ public class AuthController {
     private final JwtUtils jwtUtils;
     private final PermissionAuthorizationService permissionAuthorizationService;
 
+    /**
+     * Autentica a un usuario con email y contraseña.
+     * <p>
+     * En caso de credenciales incorrectas responde HTTP 200 con {@code success: false}
+     * en lugar de 4xx, para evitar errores rojos en consola del navegador.
+     * El frontend detecta el fallo por la ausencia del campo {@code token}.
+     * </p>
+     *
+     * @param request DTO con {@code email} y {@code password}
+     * @return HTTP 200 con el token JWT, datos del usuario y lista de permisos,
+     *         o HTTP 200 con {@code success: false} si las credenciales son incorrectas.
+     */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO request) {
 
