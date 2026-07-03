@@ -20,7 +20,7 @@ import java.util.List;
 public class SecurityConfig {
 
     // Se integró la URL de Render en el valor por defecto para no perder acceso en producción
-    @Value("${cors.allowed-origins:http://localhost:5173,http://127.0.0.1:5173,https://parking-system-frontend-vxtm.onrender.com}")
+    @Value("${cors.allowed-origins:http://localhost:5173,http://127.0.0.1:5173,https://parking-system-frontend-il10.onrender.com}")
     private String allowedOrigins;
 
     @Bean

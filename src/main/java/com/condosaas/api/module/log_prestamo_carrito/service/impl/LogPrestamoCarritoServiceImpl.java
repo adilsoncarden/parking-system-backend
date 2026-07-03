@@ -132,12 +132,16 @@ public class LogPrestamoCarritoServiceImpl implements LogPrestamoCarritoService 
         LogPrestamoCarrito entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Préstamo no encontrado"));
 
+        // Aislamiento por condominio: no editar préstamos de un condominio ajeno.
+        currentUser.assertCondominio(entity.getCarrito().getCondominio().getId());
+
         if (entity.getEstado() == EstadoPrestamo.ACTIVO) {
             throw new BusinessRuleException("Use el endpoint de devolución para préstamos activos");
         }
 
         CarritoCarga carrito = carritoRepository.findById(dto.getCarritoId())
                 .orElseThrow(() -> new EntityNotFoundException("Carrito no encontrado"));
+        currentUser.assertCondominio(carrito.getCondominio().getId());
 
         Usuario usuario = usuarioRepository.findById(dto.getUsuarioId())
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));

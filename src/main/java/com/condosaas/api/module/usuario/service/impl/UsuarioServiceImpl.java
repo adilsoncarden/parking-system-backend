@@ -137,6 +137,13 @@ public class UsuarioServiceImpl implements UsuarioService {
         Usuario entity = repository.findByIdWithRol(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
+        // Aislamiento por condominio: un admin "scoped" no puede editar usuarios de otro
+        // condominio (ni el actual del usuario, ni moverlo hacia uno ajeno).
+        currentUser.assertCondominio(condominioDeUsuario(entity));
+        if (dto.getCondominioId() != null) {
+            currentUser.assertCondominio(dto.getCondominioId());
+        }
+
         Rol rol = rolRepository.findById(dto.getRolId())
                 .orElseThrow(() -> new EntityNotFoundException("Rol no encontrado"));
 
@@ -150,7 +157,11 @@ public class UsuarioServiceImpl implements UsuarioService {
         entity.setApellidos(dto.getApellidos());
         entity.setEmail(dto.getEmail());
         entity.setTelefono(dto.getTelefono());
-        entity.setPassword(encodePassword(dto.getPassword()));
+        // La contraseña solo se cambia si llega una nueva; si viene vacía se conserva la
+        // actual (evita dejar al usuario sin contraseña al editar otros campos).
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            entity.setPassword(encodePassword(dto.getPassword()));
+        }
         entity.setTipoOcupante(dto.getTipoOcupante());
         entity.setEstado(dto.getEstado());
         entity.setRol(rol);
@@ -164,10 +175,11 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public void delete(Long id) {
-        if (!repository.existsById(id)) {
-            throw new EntityNotFoundException("Usuario no encontrado");
-        }
-        repository.deleteById(id);
+        Usuario entity = repository.findByIdWithRol(id)
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
+        // Un admin "scoped" solo puede eliminar usuarios de su propio condominio.
+        currentUser.assertCondominio(condominioDeUsuario(entity));
+        repository.delete(entity);
     }
 
     private String encodePassword(String raw) {
