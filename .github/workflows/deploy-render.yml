@@ -1,0 +1,22 @@
+name: Deploy a Render (backend)
+
+# Auto-despliegue: en cada push a main dispara el Deploy Hook del servicio en
+# Render, para que el backend se reconstruya solo (el auto-deploy nativo esta
+# apagado). Tambien se puede lanzar a mano desde la pestana Actions.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Disparar deploy en Render
+        env:
+          RENDER_DEPLOY_HOOK: "https://api.render.com/deploy/srv-d8ok501kh4rs738vunt0?key=yHugjf-c_WE"
+        run: |
+          echo "Disparando deploy del backend en Render..."
+          curl -fsS -X POST "$RENDER_DEPLOY_HOOK"
+          echo ""
+          echo "Deploy solicitado. Render reconstruira en unos minutos."
