@@ -21,8 +21,14 @@ public class Apartamento {
     @Column(name = "numero", nullable = false)
     private String numero;
 
+    // Metraje del apartamento (spec: "metraje").
     @Column(name = "area")
     private Double area;
+
+    // Indicador de si la unidad tiene derecho a plaza de estacionamiento (spec V6).
+    @Builder.Default
+    @Column(name = "derecho_estacionamiento", nullable = false, columnDefinition = "boolean default false")
+    private Boolean derechoEstacionamiento = false;
 
     @Column(name = "estado", nullable = false)
     private EstadoApartamento estado;

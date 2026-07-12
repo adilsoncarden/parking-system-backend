@@ -14,6 +14,7 @@ import com.condosaas.api.module.log_acceso_vehicular.model.LogAccesoVehicular;
 import com.condosaas.api.module.log_acceso_vehicular.model.MetodoAcceso;
 import com.condosaas.api.module.log_acceso_vehicular.model.TipoAcceso;
 import com.condosaas.api.module.log_acceso_vehicular.repository.LogAccesoVehicularRepository;
+import com.condosaas.api.module.usuario.model.TipoOcupante;
 import com.condosaas.api.security.CurrentUser;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -139,12 +140,27 @@ public class PermanenciaActivaServiceImpl implements PermanenciaActivaService {
         LocalDateTime ahora = LocalDateTime.now();
         MetodoAcceso metodo = dto.getMetodo() != null ? dto.getMetodo() : MetodoAcceso.MANUAL;
 
+        // Resolver la plaza (si vino) ANTES del log, para dejar traza de la plaza ocupada (spec V6).
+        Estacionamiento plaza = null;
+        if (dto.getEstacionamientoId() != null) {
+            plaza = estacionamientoRepository.findById(dto.getEstacionamientoId())
+                    .orElseThrow(() -> new EntityNotFoundException("Estacionamiento no encontrado"));
+            if (plaza.getEstadoOcupacion() == EstadoOcupacion.OCUPADO) {
+                throw new BusinessRuleException("La plaza " + plaza.getCodigo() + " ya está ocupada");
+            }
+        }
+
+        // Tipo de ocupante según el dueño del vehículo (Propietario / Inquilino), spec V6.
+        TipoOcupante tipoOcupante = vehiculo.getUsuario() != null ? vehiculo.getUsuario().getTipoOcupante() : null;
+
         LogAccesoVehicular logEntrada = logRepository.save(LogAccesoVehicular.builder()
                 .tipo(TipoAcceso.ENTRADA)
                 .metodo(metodo)
                 .fechaHora(ahora)
                 .observacion(dto.getObservacion())
+                .tipoOcupante(tipoOcupante)
                 .vehiculo(vehiculo)
+                .estacionamiento(plaza)
                 .build());
 
         PermanenciaActiva permanencia = repository.save(PermanenciaActiva.builder()
@@ -155,12 +171,7 @@ public class PermanenciaActivaServiceImpl implements PermanenciaActivaService {
                 .build());
 
         // Ocupar la plaza indicada (si vino)
-        if (dto.getEstacionamientoId() != null) {
-            Estacionamiento plaza = estacionamientoRepository.findById(dto.getEstacionamientoId())
-                    .orElseThrow(() -> new EntityNotFoundException("Estacionamiento no encontrado"));
-            if (plaza.getEstadoOcupacion() == EstadoOcupacion.OCUPADO) {
-                throw new BusinessRuleException("La plaza " + plaza.getCodigo() + " ya está ocupada");
-            }
+        if (plaza != null) {
             plaza.setEstadoOcupacion(EstadoOcupacion.OCUPADO);
             plaza.setVehiculoActual(vehiculo);
             estacionamientoRepository.save(plaza);
@@ -184,12 +195,18 @@ public class PermanenciaActivaServiceImpl implements PermanenciaActivaService {
         LocalDateTime ahora = LocalDateTime.now();
         MetodoAcceso metodo = dto.getMetodo() != null ? dto.getMetodo() : MetodoAcceso.MANUAL;
 
+        // Plaza que ocupaba (para dejar traza en el log de salida, spec V6).
+        Estacionamiento plazaOcupada = estacionamientoRepository.findByVehiculoActualId(vehiculo.getId()).orElse(null);
+        TipoOcupante tipoOcupante = vehiculo.getUsuario() != null ? vehiculo.getUsuario().getTipoOcupante() : null;
+
         LogAccesoVehicular logSalida = logRepository.save(LogAccesoVehicular.builder()
                 .tipo(TipoAcceso.SALIDA)
                 .metodo(metodo)
                 .fechaHora(ahora)
                 .observacion(dto.getObservacion())
+                .tipoOcupante(tipoOcupante)
                 .vehiculo(vehiculo)
+                .estacionamiento(plazaOcupada)
                 .build());
 
         permanencia.setFechaSalida(ahora);
@@ -198,11 +215,11 @@ public class PermanenciaActivaServiceImpl implements PermanenciaActivaService {
         repository.save(permanencia);
 
         // Liberar la plaza que ocupaba (si alguna)
-        estacionamientoRepository.findByVehiculoActualId(vehiculo.getId()).ifPresent(plaza -> {
-            plaza.setEstadoOcupacion(EstadoOcupacion.LIBRE);
-            plaza.setVehiculoActual(null);
-            estacionamientoRepository.save(plaza);
-        });
+        if (plazaOcupada != null) {
+            plazaOcupada.setEstadoOcupacion(EstadoOcupacion.LIBRE);
+            plazaOcupada.setVehiculoActual(null);
+            estacionamientoRepository.save(plazaOcupada);
+        }
 
         return mapToDTO(permanencia);
     }

@@ -4,6 +4,8 @@ import com.condosaas.api.module.log_acceso_vehicular.dto.*;
 import com.condosaas.api.module.log_acceso_vehicular.model.*;
 import com.condosaas.api.module.log_acceso_vehicular.repository.LogAccesoVehicularRepository;
 import com.condosaas.api.module.log_acceso_vehicular.service.LogAccesoVehicularService;
+import com.condosaas.api.module.estacionamiento.model.Estacionamiento;
+import com.condosaas.api.module.estacionamiento.repository.EstacionamientoRepository;
 import com.condosaas.api.module.vehiculo.model.Vehiculo;
 import com.condosaas.api.module.vehiculo.repository.VehiculoRepository;
 import com.condosaas.api.module.pase_invitado.model.PaseInvitado;
@@ -23,6 +25,7 @@ public class LogAccesoVehicularServiceImpl implements LogAccesoVehicularService 
     private final LogAccesoVehicularRepository repository;
     private final VehiculoRepository vehiculoRepository;
     private final PaseInvitadoRepository paseRepository;
+    private final EstacionamientoRepository estacionamientoRepository;
 
     @Override
     public LogAccesoVehicularResponseDTO create(LogAccesoVehicularRequestDTO dto) {
@@ -36,12 +39,21 @@ public class LogAccesoVehicularServiceImpl implements LogAccesoVehicularService 
                     .orElseThrow(() -> new EntityNotFoundException("Pase no encontrado"));
         }
 
+        Estacionamiento plaza = null;
+        if (dto.getEstacionamientoId() != null) {
+            plaza = estacionamientoRepository.findById(dto.getEstacionamientoId())
+                    .orElseThrow(() -> new EntityNotFoundException("Estacionamiento no encontrado"));
+        }
+
         LogAccesoVehicular entity = LogAccesoVehicular.builder()
                 .tipo(dto.getTipo())
                 .metodo(dto.getMetodo())
                 .fechaHora(dto.getFechaHora())
                 .observacion(dto.getObservacion())
+                .tipoOcupante(dto.getTipoOcupante())
+                .datosInquilino(dto.getDatosInquilino())
                 .vehiculo(vehiculo)
+                .estacionamiento(plaza)
                 .paseInvitado(pase)
                 .build();
 
@@ -87,8 +99,12 @@ public class LogAccesoVehicularServiceImpl implements LogAccesoVehicularService 
                 .metodo(entity.getMetodo())
                 .fechaHora(entity.getFechaHora())
                 .observacion(entity.getObservacion())
+                .tipoOcupante(entity.getTipoOcupante())
+                .datosInquilino(entity.getDatosInquilino())
                 .vehiculoId(entity.getVehiculo().getId())
                 .placa(entity.getVehiculo().getPlaca())
+                .estacionamientoId(entity.getEstacionamiento() != null ? entity.getEstacionamiento().getId() : null)
+                .estacionamientoCodigo(entity.getEstacionamiento() != null ? entity.getEstacionamiento().getCodigo() : null)
                 .paseInvitadoId(entity.getPaseInvitado() != null ? entity.getPaseInvitado().getId() : null)
                 .build();
     }

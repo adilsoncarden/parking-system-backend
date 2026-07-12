@@ -2,6 +2,7 @@ package com.condosaas.api.module.log_prestamo_carrito.service.impl;
 
 import com.condosaas.api.config.CarritoPenalizacionProperties;
 import com.condosaas.api.exception.BusinessRuleException;
+import com.condosaas.api.module.configuracion_multa.service.ConfiguracionMultaService;
 import com.condosaas.api.module.carrito_carga.model.CarritoCarga;
 import com.condosaas.api.module.carrito_carga.model.EstadoCarrito;
 import com.condosaas.api.module.carrito_carga.repository.CarritoCargaRepository;
@@ -35,6 +36,7 @@ public class LogPrestamoCarritoServiceImpl implements LogPrestamoCarritoService 
     private final UsuarioRepository usuarioRepository;
     private final EntradaRepository entradaRepository;
     private final CarritoPenalizacionProperties penalizacionProperties;
+    private final ConfiguracionMultaService configuracionMultaService;
     private final CurrentUser currentUser;
 
     // Carga una entrada y valida que pertenezca al mismo condominio del carrito.
@@ -77,7 +79,8 @@ public class LogPrestamoCarritoServiceImpl implements LogPrestamoCarritoService 
                 : resolveEntrada(dto.getEntradaSalidaId(), carrito);
 
         LocalDateTime now = LocalDateTime.now();
-        int limite = penalizacionProperties.getTiempoLimiteMinutos();
+        // Límite según la configuración de multas del condominio (o el global por defecto).
+        int limite = configuracionMultaService.limiteMinutos(carrito.getCondominio().getId());
 
         LogPrestamoCarrito entity = LogPrestamoCarrito.builder()
                 .fechaPrestamo(now)
@@ -200,7 +203,9 @@ public class LogPrestamoCarritoServiceImpl implements LogPrestamoCarritoService 
 
         if (minutosUsados > limite) {
             int excedido = (int) (minutosUsados - limite);
-            BigDecimal monto = penalizacionProperties.getTarifaPorMinuto()
+            // Tarifa según la configuración de multas del condominio (o el global por defecto).
+            BigDecimal tarifa = configuracionMultaService.tarifaPorMinuto(entity.getCarrito().getCondominio().getId());
+            BigDecimal monto = tarifa
                     .multiply(BigDecimal.valueOf(excedido))
                     .setScale(2, RoundingMode.HALF_UP);
             entity.setTiempoExcedidoMinutos(excedido);

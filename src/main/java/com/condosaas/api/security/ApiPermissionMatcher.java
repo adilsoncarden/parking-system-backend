@@ -71,6 +71,11 @@ public class ApiPermissionMatcher {
             rule("PUT", "/api/permisos/\\d+/update", PermisoCatalog.GESTIONAR_PERMISOS),
             rule("DELETE", "/api/permisos/\\d+/delete", PermisoCatalog.GESTIONAR_PERMISOS),
 
+            // Configuración de multas por condominio (spec V6: la gestiona el Admin_Condominio).
+            rule("GET", "/api/configuracion-multa(/.*)?", PermisoCatalog.VER_CONFIGURACION),
+            rule("PUT", "/api/configuracion-multa", PermisoCatalog.EDITAR_CONFIGURACION),
+            rule("DELETE", "/api/configuracion-multa/condominio/\\d+", PermisoCatalog.EDITAR_CONFIGURACION),
+
             // ── Parking (ParkControl) ─────────────────────────────────────
             rule("GET", "/api/vehiculos(/.*)?", PermisoCatalog.VER_VEHICULOS),
             rule("POST", "/api/vehiculos/create", PermisoCatalog.CREAR_VEHICULOS),
@@ -96,6 +101,12 @@ public class ApiPermissionMatcher {
             rule("POST", "/api/pases-invitado/create", PermisoCatalog.CREAR_PASES),
             rule("PUT", "/api/pases-invitado/\\d+/update", PermisoCatalog.EDITAR_PASES),
             rule("DELETE", "/api/pases-invitado/\\d+/delete", PermisoCatalog.ELIMINAR_PASES),
+
+            // Inquilinos temporales (spec V6: el Propietario los registra sobre una plaza).
+            rule("GET", "/api/inquilinos-temporales(/.*)?", PermisoCatalog.VER_PASES),
+            rule("POST", "/api/inquilinos-temporales/create", PermisoCatalog.CREAR_PASES),
+            rule("PUT", "/api/inquilinos-temporales/\\d+/update", PermisoCatalog.EDITAR_PASES),
+            rule("DELETE", "/api/inquilinos-temporales/\\d+/delete", PermisoCatalog.ELIMINAR_PASES),
 
             rule("POST", "/api/permanencias/registrar-entrada", PermisoCatalog.CREAR_ACCESOS),
             rule("POST", "/api/permanencias/registrar-salida", PermisoCatalog.EDITAR_ACCESOS),

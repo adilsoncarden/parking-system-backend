@@ -8,13 +8,14 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-@JsonPropertyOrder({ "id", "numero", "area", "condominioId", "torreId", "torreNombre", "pisoId", "pisoNumero",
-        "estado" })
+@JsonPropertyOrder({ "id", "numero", "area", "derechoEstacionamiento", "condominioId", "torreId", "torreNombre",
+        "pisoId", "pisoNumero", "estado" })
 public class ApartamentoResponseDTO {
 
     private Long id;
     private String numero;
     private Double area;
+    private Boolean derechoEstacionamiento;
     private EstadoApartamento estado;
 
     private Long pisoId;

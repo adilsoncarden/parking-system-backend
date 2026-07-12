@@ -37,6 +37,7 @@ public class ApartamentoServiceImpl implements ApartamentoService {
         Apartamento entity = Apartamento.builder()
                 .numero(dto.getNumero())
                 .area(dto.getArea())
+                .derechoEstacionamiento(Boolean.TRUE.equals(dto.getDerechoEstacionamiento()))
                 .estado(dto.getEstado())
                 .piso(piso)
                 .build();
@@ -83,6 +84,9 @@ public class ApartamentoServiceImpl implements ApartamentoService {
 
         entity.setNumero(dto.getNumero());
         entity.setArea(dto.getArea());
+        if (dto.getDerechoEstacionamiento() != null) {
+            entity.setDerechoEstacionamiento(dto.getDerechoEstacionamiento());
+        }
         entity.setEstado(dto.getEstado());
         entity.setPiso(piso);
 
@@ -102,6 +106,7 @@ public class ApartamentoServiceImpl implements ApartamentoService {
                 .id(entity.getId())
                 .numero(entity.getNumero())
                 .area(entity.getArea())
+                .derechoEstacionamiento(entity.getDerechoEstacionamiento())
                 .estado(entity.getEstado())
                 .pisoId(entity.getPiso().getId())
                 .pisoNumero(entity.getPiso().getNumero())

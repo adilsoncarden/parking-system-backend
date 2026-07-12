@@ -13,6 +13,9 @@ public class ApartamentoRequestDTO {
 
     private Double area;
 
+    // Derecho a estacionamiento de la unidad (spec V6). Si no viene, se asume false.
+    private Boolean derechoEstacionamiento;
+
     @NotNull
     private EstadoApartamento estado;
 
