@@ -38,6 +38,11 @@ public class Estacionamiento {
     @Column(name = "capacidad", nullable = false, columnDefinition = "integer default 1")
     private Integer capacidad = 1;
 
+    // Cuántos vehículos ocupan la plaza ahora mismo (para plazas de motos, 0..capacidad).
+    @Builder.Default
+    @Column(name = "ocupacion_actual", nullable = false, columnDefinition = "integer default 0")
+    private Integer ocupacionActual = 0;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_zona_estacionamiento", nullable = false)
     private ZonaEstacionamiento zona;

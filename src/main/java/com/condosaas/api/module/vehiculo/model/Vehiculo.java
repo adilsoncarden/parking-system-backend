@@ -1,5 +1,6 @@
 package com.condosaas.api.module.vehiculo.model;
 
+import com.condosaas.api.module.usuario.model.TipoOcupante;
 import com.condosaas.api.module.usuario.model.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,7 +35,14 @@ public class Vehiculo {
     @Column(name = "estado", nullable = false)
     private EstadoVehiculo estado;
 
+    // Tipo de ocupante del vehículo. Para carros de VISITANTE (sin dueño residente)
+    // este campo lo identifica; en carros de residentes se toma del usuario dueño.
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_ocupante")
+    private TipoOcupante tipoOcupante;
+
+    // Dueño residente del vehículo. NULLABLE: los carros de visitantes no tienen dueño.
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_usuario", nullable = false)
+    @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 }

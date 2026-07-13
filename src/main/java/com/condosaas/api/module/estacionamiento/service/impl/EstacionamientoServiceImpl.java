@@ -125,6 +125,7 @@ public class EstacionamientoServiceImpl implements EstacionamientoService {
                 .estadoOcupacion(entity.getEstadoOcupacion())
                 .tipoVehiculo(entity.getTipoVehiculo())
                 .capacidad(entity.getCapacidad())
+                .ocupacionActual(entity.getOcupacionActual())
                 .zonaEstacionamientoId(entity.getZona().getId())
                 .zonaNombre(entity.getZona().getNombre())
                 .apartamentoId(entity.getApartamento() != null ? entity.getApartamento().getId() : null)

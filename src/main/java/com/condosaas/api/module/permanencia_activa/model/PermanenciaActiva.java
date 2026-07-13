@@ -1,5 +1,6 @@
 package com.condosaas.api.module.permanencia_activa.model;
 
+import com.condosaas.api.module.estacionamiento.model.Estacionamiento;
 import com.condosaas.api.module.vehiculo.model.Vehiculo;
 import com.condosaas.api.module.log_acceso_vehicular.model.LogAccesoVehicular;
 import jakarta.persistence.*;
@@ -34,6 +35,12 @@ public class PermanenciaActiva {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_vehiculo", nullable = false)
     private Vehiculo vehiculo;
+
+    // Plaza que ocupa esta permanencia (para liberar el cupo correcto al salir,
+    // incluso en plazas de motos con varios ocupantes). Nullable por compatibilidad.
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_estacionamiento")
+    private Estacionamiento estacionamiento;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_log_entrada", nullable = false)

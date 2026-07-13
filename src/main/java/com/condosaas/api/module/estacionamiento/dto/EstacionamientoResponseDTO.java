@@ -15,6 +15,7 @@ public class EstacionamientoResponseDTO {
 
     private TipoVehiculo tipoVehiculo;
     private Integer capacidad;
+    private Integer ocupacionActual;
 
     private Long zonaEstacionamientoId;
     private String zonaNombre;

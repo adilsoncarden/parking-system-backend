@@ -103,10 +103,19 @@ public class VehiculoServiceImpl implements VehiculoService {
 
     private VehiculoResponseDTO mapToDTO(Vehiculo entity) {
         var usuario = entity.getUsuario();
-        var apartamento = usuario.getApartamento();
+        var apartamento = usuario != null ? usuario.getApartamento() : null;
         var piso = apartamento != null ? apartamento.getPiso() : null;
         var torre = piso != null ? piso.getTorre() : null;
         var condominio = torre != null ? torre.getCondominio() : null;
+
+        // Tipo de ocupante: el del dueño (residente); si no tiene dueño, el del propio
+        // vehículo (carros de VISITANTE registrados en portería).
+        String tipoOcupante = null;
+        if (usuario != null && usuario.getTipoOcupante() != null) {
+            tipoOcupante = usuario.getTipoOcupante().name();
+        } else if (entity.getTipoOcupante() != null) {
+            tipoOcupante = entity.getTipoOcupante().name();
+        }
 
         return VehiculoResponseDTO.builder()
                 .id(entity.getId())
@@ -115,11 +124,11 @@ public class VehiculoServiceImpl implements VehiculoService {
                 .modelo(entity.getModelo())
                 .color(entity.getColor())
                 .estado(entity.getEstado())
-                .usuarioId(usuario.getId())
-                .usuarioNombre(usuario.getNombres() + " " + usuario.getApellidos())
+                .usuarioId(usuario != null ? usuario.getId() : null)
+                .usuarioNombre(usuario != null ? usuario.getNombres() + " " + usuario.getApellidos() : "Visitante")
                 .apartamentoId(apartamento != null ? apartamento.getId() : null)
                 .unidad(apartamento != null ? apartamento.getNumero() : null)
-                .tipoOcupante(usuario.getTipoOcupante() != null ? usuario.getTipoOcupante().name() : null)
+                .tipoOcupante(tipoOcupante)
                 .pisoNumero(piso != null ? piso.getNumero() : null)
                 .torreNombre(torre != null ? torre.getNombre() : null)
                 .condominioNombre(condominio != null ? condominio.getNombre() : null)
